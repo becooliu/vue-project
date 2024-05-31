@@ -7,6 +7,11 @@ const router = createRouter({
       path: '/bookingFlight',
       name: 'bookingFlight',
       component: () => import('../views/BookingFlightView.vue')
+    },
+    {
+      path: '/user/regist',
+      name: 'user_regist',
+      component: () => import('../views/user/RegistView.vue')
     }
   ]
 })
