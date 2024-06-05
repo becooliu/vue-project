@@ -8,7 +8,7 @@
     label-width="auto"
     class="demo-ruleForm"
   >
-    <h3 class="user_form_title">注册账号</h3>
+    <h3 class="user_form_title">用户登录</h3>
     <el-form-item label="账号" prop="username">
       <el-input v-model="ruleForm.username" type="text" autocomplete="off" />
     </el-form-item>
@@ -19,20 +19,18 @@
         autocomplete="off"
       />
     </el-form-item>
-    <el-form-item label="Confirm" prop="checkPass">
-      <el-input
-        v-model="ruleForm.checkPass"
-        type="password"
-        autocomplete="off"
-      />
-    </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm(ruleFormRef)">
-        注册
+        登录
       </el-button>
       <el-button @click="resetForm(ruleFormRef)">重置</el-button>
     </el-form-item>
   </el-form>
+  <el-row justify="end">
+    <el-col :span="6"
+      ><el-link href="/user/regist">没有账号？立即注册</el-link></el-col
+    >
+  </el-row>
 </template>
 
 <script lang="ts" setup>
@@ -52,34 +50,18 @@ const validateUsername = (rule: any, value: String, callback: any) => {
 const validatePass = (rule: any, value: any, callback: any) => {
   if (value === "") {
     callback(new Error("请输入密码"));
-  } else {
-    if (ruleForm.checkPass !== "") {
-      if (!ruleFormRef.value) return;
-      ruleFormRef.value.validateField("checkPass");
-    }
-    callback();
   }
-};
-const validatePass2 = (rule: any, value: any, callback: any) => {
-  if (value === "") {
-    callback(new Error("请再次输入密码"));
-  } else if (value !== ruleForm.password) {
-    callback(new Error("两次密码不一致!"));
-  } else {
-    callback();
-  }
+  callback();
 };
 
 const ruleForm = reactive({
   username: "",
   password: "",
-  checkPass: "",
 });
 
 const rules = reactive({
   username: [{ validator: validateUsername, trigger: "blur" }],
   password: [{ validator: validatePass, trigger: "blur" }],
-  checkPass: [{ validator: validatePass2, trigger: "blur" }],
 });
 
 const submitForm = (formEl) => {
@@ -91,7 +73,7 @@ const submitForm = (formEl) => {
         password: ruleForm.password,
       };
       instance
-        .post("/user/create", data)
+        .post("/user/login", data)
         .then((res) => {
           const { status, message } = res?.data;
           const type = status === 200 ? "success" : "error";
