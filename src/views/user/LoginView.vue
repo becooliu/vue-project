@@ -1,5 +1,5 @@
 <script setup>
-import Regist from "../../components/user/Login.vue";
+import Regist from "../../components/user/LoginComp.vue";
 </script>
 
 <template>

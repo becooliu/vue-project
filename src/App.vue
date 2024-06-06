@@ -30,6 +30,12 @@
 import { RouterLink, RouterView } from "vue-router";
 import { ref } from "vue";
 
+// 引入用户相关的state
+import {useUserStatusStore} from '@/store/index'
+const store = useUserStatusStore()
+
+console.log('store', store.getLoginStatus)
+
 const activeIndex = ref("1");
 const handleSelect = (key: string, keyPath: string[]) => {
   console.log(key, keyPath);

@@ -36,6 +36,11 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
 import instance from "@/axios/base";
+
+// 引入用户相关的state
+import {useUserStatusStore} from '@/store/index'
+const store = useUserStatusStore()
+
 // import type { FormInstance, FormRules } from 'element-plus'
 
 const ruleFormRef = ref(null);
@@ -75,20 +80,22 @@ const submitForm = (formEl) => {
       instance
         .post("/user/login", data)
         .then((res) => {
-          const { status, message } = res?.data;
+          const { status, message, username } = res?.data;
           const type = status === 200 ? "success" : "error";
           if (res?.status === 200) {
             console.log(res);
             ElNotification({
-              title: "注册帐号",
+              title: "帐号登录",
               message: message,
               type,
             });
+            console.log(res.username)
+            store.afterLogin(username)
           }
         })
         .catch((err) => {
           ElNotification({
-            title: "注册帐号",
+            title: "帐号登录",
             message: err,
             type: "error",
           });

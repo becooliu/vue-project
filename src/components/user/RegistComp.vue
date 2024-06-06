@@ -38,18 +38,19 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
 import instance from "@/axios/base";
+import { ElNotification } from "element-plus";
 // import type { FormInstance, FormRules } from 'element-plus'
 
 const ruleFormRef = ref(null);
 
-const validateUsername = (rule: any, value: String, callback: any) => {
+const validateUsername = (rule, value, callback) => {
   if (value === "") {
     callback(new Error("用户名不能为空。"));
   }
   callback();
 };
 
-const validatePass = (rule: any, value: any, callback: any) => {
+const validatePass = (rule, value, callback) => {
   if (value === "") {
     callback(new Error("请输入密码"));
   } else {
@@ -60,7 +61,7 @@ const validatePass = (rule: any, value: any, callback: any) => {
     callback();
   }
 };
-const validatePass2 = (rule: any, value: any, callback: any) => {
+const validatePass2 = (rule, value, callback) => {
   if (value === "") {
     callback(new Error("请再次输入密码"));
   } else if (value !== ruleForm.password) {
@@ -93,10 +94,12 @@ const submitForm = (formEl) => {
       instance
         .post("/user/create", data)
         .then((res) => {
+          // eslint-disable-next-line no-unsafe-optional-chaining
           const { status, message } = res?.data;
           const type = status === 200 ? "success" : "error";
           if (res?.status === 200) {
             console.log(res);
+            // eslint-disable-next-line no-undef
             ElNotification({
               title: "注册帐号",
               message: message,
@@ -105,6 +108,7 @@ const submitForm = (formEl) => {
           }
         })
         .catch((err) => {
+          // eslint-disable-next-line no-undef
           ElNotification({
             title: "注册帐号",
             message: err,
