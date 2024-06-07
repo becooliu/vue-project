@@ -89,7 +89,8 @@ const submitForm = (formEl) => {
               message: message,
               type,
             });
-            console.log(res.username)
+            
+            // 登录成功后，设置相关的状态
             store.afterLogin(username)
           }
         })
