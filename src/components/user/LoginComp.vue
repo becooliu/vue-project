@@ -39,20 +39,21 @@ import instance from "@/axios/base";
 
 // 引入用户相关的state
 import {useUserStatusStore} from '@/store/index'
+import { ElNotification } from "element-plus";
 const store = useUserStatusStore()
 
 // import type { FormInstance, FormRules } from 'element-plus'
 
 const ruleFormRef = ref(null);
 
-const validateUsername = (rule: any, value: String, callback: any) => {
+const validateUsername = (rule, value, callback) => {
   if (value === "") {
     callback(new Error("用户名不能为空。"));
   }
   callback();
 };
 
-const validatePass = (rule: any, value: any, callback: any) => {
+const validatePass = (rule, value, callback) => {
   if (value === "") {
     callback(new Error("请输入密码"));
   }
@@ -80,7 +81,7 @@ const submitForm = (formEl) => {
       instance
         .post("/user/login", data)
         .then((res) => {
-          const { status, message, username } = res?.data;
+          const { status, message, username } = res.data;
           const type = status === 200 ? "success" : "error";
           if (res?.status === 200) {
             console.log(res);

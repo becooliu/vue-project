@@ -94,12 +94,10 @@ const submitForm = (formEl) => {
       instance
         .post("/user/create", data)
         .then((res) => {
-          // eslint-disable-next-line no-unsafe-optional-chaining
-          const { status, message } = res?.data;
+          const { status, message } = res.data;
           const type = status === 200 ? "success" : "error";
           if (res?.status === 200) {
             console.log(res);
-            // eslint-disable-next-line no-undef
             ElNotification({
               title: "注册帐号",
               message: message,
@@ -108,7 +106,6 @@ const submitForm = (formEl) => {
           }
         })
         .catch((err) => {
-          // eslint-disable-next-line no-undef
           ElNotification({
             title: "注册帐号",
             message: err,

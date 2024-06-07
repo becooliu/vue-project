@@ -10,7 +10,8 @@
     <div class="flex-grow" />
     <!-- <el-menu-item index="1">Processing Center</el-menu-item> -->
     <el-sub-menu index="2">
-      <template #title index="/user">用户管理</template>
+      <template #title>用户管理</template>
+      <el-menu-item index="/user/userlist">用户列表</el-menu-item>
       <el-menu-item index="/user/regist">注册账号</el-menu-item>
       <el-menu-item index="/user/login" v-if="!isLogin">用户登录</el-menu-item>
       <el-menu-item index="2-3">重置密码</el-menu-item>
@@ -27,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { RouterLink, RouterView } from "vue-router";
+import { RouterView } from "vue-router";
 import { ref } from "vue";
 
 // 引入用户相关的state
@@ -38,9 +39,7 @@ const isLogin = ref(store.getLoginStatus)
 console.log('store', isLogin)
 
 const activeIndex = ref("1");
-const handleSelect = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath);
-};
+
 </script>
 
 <style>
