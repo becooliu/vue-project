@@ -1,7 +1,10 @@
 <template>
   <el-table :data="filterTableData" style="width: 100%">
-    <el-table-column label="Date" prop="date" />
-    <el-table-column label="Name" prop="name" />
+    <el-table-column label="用户名" prop="username" />
+    <el-table-column label="昵称" prop="nickname" />
+    <el-table-column label="邮箱" prop="email" />
+    <el-table-column label="年龄" prop="age" />
+    <el-table-column label="性别" prop="sex" />
     <el-table-column align="right">
       <template #header>
         <el-input v-model="search" size="small" placeholder="输入搜索条件" />
@@ -28,19 +31,20 @@ import instance from '@/axios/base';
 
 const userData = ref()
 
-onMounted(() => {
-  instance.get('/user/userlist')
-  .then(res => {
-    userData.value = res.data
-  })
-})
+/* onMounted(() => {
+}) */
 
+instance.get('/user/userlist')
+.then(res => {
+  console.log('res, ', res)
+  userData.value = res.data.data
+})
 const search = ref('')
 const filterTableData = computed(() =>
-  tableData.filter(
+userData?.value?.filter(
     (data) =>
       !search.value ||
-      data.name.toLowerCase().includes(search.value.toLowerCase())
+      data.username.toLowerCase().includes(search.value.toLowerCase())
   )
 )
 const handleEdit = (index, row) => {
@@ -49,27 +53,4 @@ const handleEdit = (index, row) => {
 const handleDelete = (index, row) => {
   console.log(index, row)
 }
-
-const tableData = [
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'John',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-04',
-    name: 'Morgan',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-01',
-    name: 'Jessy',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-]
 </script>
