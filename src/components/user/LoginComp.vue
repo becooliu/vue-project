@@ -1,3 +1,4 @@
+<!-- eslint-disable no-undef -->
 <template>
   <el-form
     ref="ruleFormRef"
@@ -39,7 +40,7 @@ import instance from "@/axios/base";
 
 // 引入用户相关的state
 import {useUserStatusStore} from '@/store/index'
-import { ElNotification } from "element-plus";
+// import { ElNotification } from "element-plus";
 const store = useUserStatusStore()
 
 // import type { FormInstance, FormRules } from 'element-plus'

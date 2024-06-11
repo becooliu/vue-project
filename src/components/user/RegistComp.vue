@@ -38,7 +38,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
 import instance from "@/axios/base";
-import { ElNotification } from "element-plus";
+// import { ElNotification } from "element-plus";
 // import type { FormInstance, FormRules } from 'element-plus'
 
 const ruleFormRef = ref(null);
