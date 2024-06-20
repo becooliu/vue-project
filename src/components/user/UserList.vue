@@ -3,8 +3,12 @@
     <el-table-column label="序号" type="index" width="70px"/>
     <el-table-column label="用户名" prop="username" />
     <el-table-column label="昵称" prop="nickname" />
-    <el-table-column label="邮箱" prop="email" />
-    <el-table-column label="出生日期" prop="birthday" />
+    <el-table-column label="邮箱" prop="email"/>
+    <el-table-column label="年龄">
+      <template #default="scope">
+        <span>{{ computedUserAge(scope.row.birthday) }}</span>
+      </template>
+    </el-table-column>
     <el-table-column label="性别" prop="sex" />
     <el-table-column align="right">
       <template #header>
@@ -38,6 +42,7 @@
         :total="totalCount"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
+        @update:page-size="updatePageSize"
         />
   </div>
 
@@ -45,7 +50,7 @@
   <el-dialog v-model="editDialogFormVisible" title="编辑用户信息" width="500">
     <el-form :model="form">
       <el-form-item label="帐号" :label-width="formLabelWidth">
-        <el-input v-model="form.username" autocomplete="off" />
+        <el-input v-model="form.username" autocomplete="off" disabled />
       </el-form-item>
       <el-form-item label="昵称" :label-width="formLabelWidth">
         <el-input v-model="form.nickname" autocomplete="off" />
@@ -73,16 +78,37 @@
 <script lang="ts" setup>
 import { computed, ref, reactive, onMounted } from 'vue'
 import instance from '@/axios/base';
-import { ro } from 'element-plus/es/locale';
 
 const userData = ref()
 const totalCount = ref(1)
 
 //分页参数
 const currentPage = ref(1)
-const pagesize = ref(10)
+const pagesize = computed(() => {
+  return pageSize10.value
+})
 
+// 分页
+const currentPage1 = ref(1)
+const pageSize10 = ref(10)
+const small = ref(false)
+const background = ref(true)
+const disabled = ref(false)
 
+const handleSizeChange = (val: number) => {
+
+  pageSize10.value = val
+  console.log(`${val} items per page`)
+}
+const handleCurrentChange = (val: number) => {
+  currentPage.value = val
+  getUserList()
+  console.log(`current page: ${val}`)
+}
+const updatePageSize = (val: number) => {
+  console.log(`pageSize update ${val}`)
+  pageSize10.value = val
+}
 
 /* onMounted(() => {
   getUserList()
@@ -109,22 +135,9 @@ userData?.value?.filter(
   )
 )
 
-// 分页
-const currentPage1 = ref(1)
-const pageSize10 = ref(10)
-const small = ref(false)
-const background = ref(true)
-const disabled = ref(false)
-
-const handleSizeChange = (val: number) => {
-  console.log(`${val} items per page`)
+const computedUserAge = (birthday: string) =>{
+  return Math.floor(Math.abs(new Date().getTime() - new Date(birthday).getTime()) / (1000 * 60 * 60 * 24 * 30 * 12))
 }
-const handleCurrentChange = (val: number) => {
-  currentPage.value = val
-  getUserList()
-  console.log(`current page: ${val}`)
-}
-
 
 // 编辑用户参数
 const editDialogFormVisible = ref(false)
