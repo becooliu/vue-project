@@ -22,13 +22,12 @@
         <el-button size="small" @click="handleEditDialogForm(scope.$index, scope.row)">
           编辑
         </el-button>
-        <el-button
-          size="small"
-          type="danger"
-          @click="handleDelete(scope.$index, scope.row)"
-        >
-          删除
-        </el-button>
+
+        <el-popconfirm title="确认删除此用户？" width="220" confirm-button-text="是" cancel-button-text="取消" @confirm="deleteUser(scope.$index, scope.row)">
+          <template #reference>
+            <el-button size="small" type="danger">删除</el-button>
+          </template>
+        </el-popconfirm>
       </template>
     </el-table-column>
   </el-table>
@@ -113,10 +112,8 @@ const handleSizeChange = (val: number) => {
 const handleCurrentChange = (val: number) => {
   currentPage.value = val
   getUserList()
-  console.log(`current page: ${val}`)
 }
 const updatePageSize = (val: number) => {
-  console.log(`pageSize update ${val}`)
   pagesize.value = val
   getUserList()
 }
@@ -127,10 +124,9 @@ const updatePageSize = (val: number) => {
 function getUserList () {
   instance.get(`/user/userlist?pageSize=${pagesize.value}&currentPage=${currentPage.value}`)
   .then(res => {
-    // console.log('res, ', res)
     userData.value = res.data.pageData
-    console.log('totalCount: ', res.data.totalCount)
-    totalCount.value = Number(res.data.totalCount)
+    console.log('totalCount: ', totalCount)
+    totalCount.value = res.data.totalCount
   }).catch(error => {
     console.error(error)
   })
@@ -216,7 +212,6 @@ const confirmEditUserInfo = function(){
     console.log('status', status)
     const type = status === 200 ? "success" : "error";
     if (status === 200) {
-      console.log('456', res);
       // eslint-disable-next-line no-undef
       ElNotification({
         title: "修改用户信息",
@@ -234,7 +229,41 @@ const confirmEditUserInfo = function(){
     });
   });
 }
-const handleDelete = (index, row) => {
+const deleteUser = (index, row) => {
   console.log(index, row)
+  const {username, _id} = row
+  const deleteUser = {
+    _id,
+    username,
+    currentPage: currentPage.value,
+    pagesize: pagesize.value
+  }
+
+  instance.post('/user/delete_user', deleteUser).then(res => {
+    const {status, message, pageData} = res.data
+    const type = status === 200 ? 'success' : 'error'
+    if(status === 200) {
+      userData.value = pageData
+      totalCount.value = Number(res.data.totalCount)
+      ElNotification({
+        title: "删除用户",
+        message: message,
+        type,
+      });
+    }else {
+      ElNotification({
+        title: "删除用户",
+        message: message,
+        type: "error"
+      });
+    }
+  })
+  .catch(err => {
+    ElNotification({
+      title: "删除用户",
+      message: err,
+      type: "error",
+    });
+  })
 }
 </script>
