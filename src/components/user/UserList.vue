@@ -19,7 +19,7 @@
         <el-input v-model="search" size="small" placeholder="输入搜索条件" />
       </template>
       <template #default="scope">
-        <el-button size="small" @click="handleEditDialogForm(scope.$index, scope.row)">
+        <el-button size="small" type="primary" @click="handleEditDialogForm(scope.$index, scope.row)">
           编辑
         </el-button>
 
