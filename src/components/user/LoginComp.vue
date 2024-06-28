@@ -37,9 +37,11 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
 import instance from "@/axios/base";
+import router from "@/router";
 
 // 引入用户相关的state
 import {useUserStatusStore} from '@/store/index'
+import { setCookie } from "@/utils";
 // import { ElNotification } from "element-plus";
 const store = useUserStatusStore()
 
@@ -73,15 +75,47 @@ const rules = reactive({
 
 const submitForm = (formEl) => {
   if (!formEl) return;
-  formEl.validate((valid) => {
+  formEl.validate(async (valid) => {
     if (valid) {
       const data = {
         username: ruleForm.username,
         password: ruleForm.password,
       };
-      instance
+      try {
+        const loginResponse = await instance.post("/user/login", data)
+
+        // console.log('after login res: ', loginResponse)
+        const { status, message, username, _id } = loginResponse.data;
+        const type = status === 200 ? "success" : "error";
+        if (status === 200) {
+          console.log(loginResponse);
+          ElNotification({
+            title: "帐号登录",
+            message: message,
+            type,
+          });
+          
+          // 登录成功后，设置相关的状态
+          store.afterLogin(username)
+          const userInfo = {username, _id}
+          // 登录成功后设置cookie 1天后失效
+          setCookie('userInfo', JSON.stringify(userInfo), 1)
+          router.push({path: '/user/userlist'})
+        } else {
+          ElNotification({
+            title: "帐号登录",
+            message,
+            type: "error",
+          });
+        }
+    }catch(err) {
+      throw new Error(err)
+    }
+      
+      /* instance
         .post("/user/login", data)
         .then((res) => {
+          console.log('after login res: ', res)
           const { status, message, username } = res.data;
           const type = status === 200 ? "success" : "error";
           if (res?.status === 200) {
@@ -94,6 +128,7 @@ const submitForm = (formEl) => {
             
             // 登录成功后，设置相关的状态
             store.afterLogin(username)
+            
           }
         })
         .catch((err) => {
@@ -103,8 +138,13 @@ const submitForm = (formEl) => {
             type: "error",
           });
           throw new Error(err);
-        });
+        }); */
     } else {
+      ElNotification({
+        title: "帐号登录",
+        message: '登录失败，请核对你填写的数据是否正确。',
+        type: "error",
+      });
       console.log("error submit!");
     }
   });

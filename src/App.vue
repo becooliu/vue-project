@@ -15,7 +15,7 @@
       <el-menu-item index="/user/regist">注册账号</el-menu-item>
       <el-menu-item index="/user/login" v-if="!isLogin">用户登录</el-menu-item>
       <el-menu-item index="2-3">重置密码</el-menu-item>
-      <el-menu-item index="2-4" @click="store.userLogout">登出</el-menu-item>
+      <el-menu-item index="/user/login" v-if="isLogin" @click="logout">登出</el-menu-item>
       <!-- <el-sub-menu index="2-4">
         <template #title>item four</template>
         <el-menu-item index="2-4-1">item one</el-menu-item>
@@ -39,6 +39,15 @@ const isLogin = ref(store.getLoginStatus)
 console.log('store', isLogin)
 
 const activeIndex = ref("1");
+
+function logout() {
+  store.userLogout()
+  ElNotification({
+    title: "帐号登出",
+    message: '账号登出成功',
+    type: "success"
+  })
+}
 
 </script>
 
