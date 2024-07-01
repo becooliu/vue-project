@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { getCookie } from '@/utils'
 
 // axios.defaults.baseURL = 'http://localhost:8088'
+axios.defaults.withCredentials = true // 默认携带cookie
 
 const instance = axios.create({
   baseURL: 'http://localhost:8088', // 服务器地址
@@ -10,7 +10,5 @@ const instance = axios.create({
     'Content-Type': 'application/x-www-form-urlencoded'
   }
 })
-
-document.cookie = getCookie('userinfo')
 
 export default instance
