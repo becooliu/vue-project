@@ -85,7 +85,7 @@ const submitForm = (formEl) => {
         const loginResponse = await instance.post("/user/login", data)
 
         // console.log('after login res: ', loginResponse)
-        const { status, message, username, _id } = loginResponse.data;
+        const { status, message, username, _id, isAdmin } = loginResponse.data;
         const type = status === 200 ? "success" : "error";
         if (status === 200) {
           console.log(loginResponse);
@@ -95,12 +95,23 @@ const submitForm = (formEl) => {
             type,
           });
           
+          console.log('isAdmin', isAdmin)
           // 登录成功后，设置相关的状态
-          store.afterLogin(username)
+          const userStoreData = {
+            username,
+            isAdmin
+          }
+          store.afterLogin(userStoreData)
           const userInfo = {username, _id}
           // 登录成功后设置cookie 1天后失效
           setCookie('userInfo', JSON.stringify(userInfo), 1)
-          router.push({path: '/user/userlist'})
+          if(isAdmin) {
+            router.push({path: '/admin/index'})
+
+          }else {
+            router.push({path: '/user/userlist'})
+
+          }
         } else {
           ElNotification({
             title: "帐号登录",

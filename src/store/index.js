@@ -3,11 +3,13 @@ import { computed, ref } from 'vue'
 
 export const useUserStatusStore = defineStore('userStatus', () => {
   const isLogin = ref(false)
+  const isAdmin = ref(false)
   const getLoginStatus = computed(() => {
     return localStorage.getItem('userKey')?.length || isLogin
   })
-  function afterLogin(username) {
+  function afterLogin(userStoreData) {
     isLogin.value = true
+    isAdmin.value = userStoreData.isAdmin
     localStorage.setItem('userKey', username)
   }
 
