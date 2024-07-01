@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCol: typeof import('element-plus/es')['ElCol']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
@@ -26,10 +27,12 @@ declare module 'vue' {
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
+    Index: typeof import('./src/components/user/Index.vue')['default']
     LoginComp: typeof import('./src/components/user/LoginComp.vue')['default']
     RegistComp: typeof import('./src/components/user/RegistComp.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    User: typeof import('./src/components/user/index.vue')['default']
     UserList: typeof import('./src/components/user/UserList.vue')['default']
   }
 }
