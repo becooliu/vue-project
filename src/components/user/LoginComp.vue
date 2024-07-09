@@ -85,7 +85,8 @@ const submitForm = (formEl) => {
         const loginResponse = await instance.post("/user/login", data)
 
         // console.log('after login res: ', loginResponse)
-        const { status, message, username, _id, isAdmin } = loginResponse.data;
+        const { status, message } = loginResponse.data;
+        const { username, _id, isAdmin, role } = loginResponse.data.user
         const type = status === 200 ? "success" : "error";
         if (status === 200) {
           console.log(loginResponse);
@@ -102,6 +103,8 @@ const submitForm = (formEl) => {
             isAdmin
           }
           store.afterLogin(userStoreData)
+          store.setUserPermissions(role.permissions)
+          store.setUserRole(role.role)
           const userInfo = {username, _id}
           // 登录成功后设置cookie 1天后失效
           setCookie('userInfo', JSON.stringify(userInfo), 1)
