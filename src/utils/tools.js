@@ -21,6 +21,6 @@ export const getCookie = name => {
 export const deleteCookie = name => {
   var exp = new Date()
   exp.setTime(exp.getTime() - 1)
-  var cval = this.getCookie(name)
+  var cval = getCookie(name)
   if (cval != null) document.cookie = name + '=' + cval + ';path=/;expires=' + exp.toGMTString()
 }
