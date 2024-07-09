@@ -1,4 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useUserStatusStore } from '@/store'
+import { storeToRefs } from 'pinia'
+// import { ro } from 'element-plus/es/locale'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -6,7 +9,10 @@ const router = createRouter({
     {
       path: '/user/index',
       name: 'user_index',
-      component: () => import('../views/user/Index.vue')
+      component: () => import('../views/user/Index.vue'),
+      meta: {
+        requireAuth: true // 需要用户登录
+      }
     },
     {
       path: '/user/regist',
@@ -21,14 +27,57 @@ const router = createRouter({
     {
       path: '/user/userlist',
       name: 'user_list',
-      component: () => import('../views/user/UserList.vue')
+      component: () => import('../views/user/UserList.vue'),
+      meta: {
+        requireAuth: true, // 需要用户登录
+        roles: ['admin'] //受访问限制的角色
+      }
     },
     {
       path: '/admin/index',
       name: 'admin_index',
-      component: () => import('../views/admin/index.vue')
+      component: () => import('../views/admin/index.vue'),
+      meta: {
+        requireAuth: true, // 需要用户登录
+        roles: ['admin'] //受访问限制的角色
+      }
+    },
+    {
+      path: '/denied',
+      name: 'denied',
+      component: () => import('@/components/denied/index.vue') // 无权访问
     }
   ]
+})
+
+// 添加路由前置守卫
+router.beforeEach((to, from, next) => {
+  const store = useUserStatusStore()
+
+  //获取当前登录状态及用户角色
+  const { getLoginStatus, roles } = storeToRefs(store)
+
+  // 判断该路由是否需要登录权限
+  if (to.meta.requireAuth) {
+    // 如果需要，则检验用户是否登录
+    if (getLoginStatus.value) {
+      // 判断当前用户是否有访问该路由的权限
+      if (to?.meta.roles) {
+        if (to.meta.roles.includes(roles.value)) {
+          next()
+        } else {
+          next('/denied')
+        }
+      } else {
+        next()
+      }
+    } else {
+      // 如果用未登录，则跳转登录页
+      next('/user/login')
+    }
+  } else {
+    next() // 如果不需要登录权限，则直接进入页面
+  }
 })
 
 export default router;
