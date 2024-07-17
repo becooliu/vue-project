@@ -1,11 +1,11 @@
 <script setup>
-import UserList from "../../components/user/UserList.vue";
+import Regist from "@/components/user/RegistComp.vue";
 </script>
 
 <template>
   <el-row>
-    <UserList />
     <el-col :span="12" :offset="6">
+      <Regist />
     </el-col>
   </el-row>
 </template>
