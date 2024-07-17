@@ -109,11 +109,10 @@ const submitForm = (formEl) => {
           // 登录成功后设置cookie 1天后失效
           setCookie('userInfo', JSON.stringify(userInfo), 1)
           if(isAdmin) {
-            router.push({path: '/admin/index'})
+            router.push({path: '/'})
 
           }else {
-            router.push({path: '/user/userlist'})
-
+            router.push({path: '/user/index'})
           }
         } else {
           ElNotification({
