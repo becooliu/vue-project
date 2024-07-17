@@ -1,6 +1,7 @@
 <template>
     <div class="denied-box">
         <h3>您没有权限访问该页面，如有疑问，请联系管理员。</h3>
+        <el-link href="/user/index" target="_self">返回用户首页</el-link>
     </div>
 </template>
 <style scoped lang="scss">
