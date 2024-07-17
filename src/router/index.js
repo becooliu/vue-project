@@ -55,6 +55,10 @@ const router = createRouter({
       path: '/',
       name: 'layout',
       component: () => import('@/layout/index.vue'),
+      meta: {
+        requireAuth: true,
+        roles: ['admin']
+      },
       children: layoutChildrens
     }
   ]
@@ -65,16 +69,17 @@ router.beforeEach((to, from, next) => {
   const store = useUserStatusStore()
 
   //获取当前登录状态及用户角色
-  const { getLoginStatus, roles } = storeToRefs(store)
+  const { getLoginStatus, getUserRole } = storeToRefs(store)
 
   // 判断该路由是否需要登录权限
   if (to.meta.requireAuth) {
     // 如果需要，则检验用户是否登录
     if (getLoginStatus?.value) {
-      console.log('router before each', getLoginStatus?.value)
+      console.log('router before each', getUserRole?.value)
       // 判断当前用户是否有访问该路由的权限
+      // console.log(roles.value)
       if (to?.meta.roles) {
-        if (to.meta.roles.includes(roles.value)) {
+        if (to.meta.roles.includes(getUserRole?.value)) {
           next()
         } else {
           next('/denied')
@@ -83,6 +88,7 @@ router.beforeEach((to, from, next) => {
         next()
       }
     } else {
+      console.log('未登录')
       // 如果用未登录，则跳转登录页
       next('/user/login')
     }

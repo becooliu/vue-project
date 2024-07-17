@@ -16,8 +16,8 @@ export const useUserStatusStore = defineStore('userStatus', () => {
 
   // 获取登录状态
   const getLoginStatus = computed(() => {
-    console.log('getLoginStatus', localStorage.getItem('userKey')?.length > 0 || isLogin)
-    return isLogin ? isLogin : localStorage.getItem('userKey')?.length > 0
+    console.log('getLoginStatus', localStorage.getItem('userKey')?.length > 0 || isLogin.value)
+    return isLogin.value ? isLogin.value : localStorage.getItem('userKey')?.length > 0
   })
 
   const getUserIsAdmin = computed(() => {
@@ -28,6 +28,10 @@ export const useUserStatusStore = defineStore('userStatus', () => {
   const setUserPermissions = params => {
     userPermissions.value = params
   }
+
+  const getUserRole = computed(() => {
+    return localStorage.getItem('userKey')
+  })
 
   const setUserRole = role => {
     roles.value = role
@@ -54,6 +58,7 @@ export const useUserStatusStore = defineStore('userStatus', () => {
     getUserIsAdmin,
     setUserPermissions,
     setUserRole,
+    getUserRole,
     afterLogin,
     userLogout
   }
