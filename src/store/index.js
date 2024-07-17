@@ -16,7 +16,8 @@ export const useUserStatusStore = defineStore('userStatus', () => {
 
   // 获取登录状态
   const getLoginStatus = computed(() => {
-    return localStorage.getItem('userKey')?.length > 0 || isLogin
+    console.log('getLoginStatus', localStorage.getItem('userKey')?.length > 0 || isLogin)
+    return isLogin ? isLogin : localStorage.getItem('userKey')?.length > 0
   })
 
   const getUserIsAdmin = computed(() => {
@@ -35,7 +36,7 @@ export const useUserStatusStore = defineStore('userStatus', () => {
   //设置登录后的状态
   const afterLogin = userStoreData => {
     isLogin.value = true
-    isAdmin.value = userStoreData.isAdmin
+    isAdmin.value = Boolean(userStoreData.isAdmin)
     localStorage.setItem('userKey', userStoreData.username)
   }
 
