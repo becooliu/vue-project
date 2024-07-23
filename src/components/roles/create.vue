@@ -1,31 +1,23 @@
 <template>
-    <el-form
-      ref="ruleFormRef"
-      style="max-width: 600px"
-      :model="ruleForm"
-      status-icon
-      :rules="rules"
-      label-width="auto"
-      class="demo-ruleForm"
-    >
-      <h3 class="user_form_title">创建角色</h3>
-      <el-form-item label="角色" prop="role">
-        <el-input v-model="ruleForm.role" type="text" autocomplete="off" />
-      </el-form-item>
-      <el-form-item label="权限" prop="permissions">
-        <el-input v-model="ruleForm.permissions" type="text" autocomplete="off" />
-      </el-form-item>
-      
-      <el-divider />
-  
-      <el-form-item>
-        <el-button type="primary" @click="submitForm(ruleFormRef)">
-          添加
-        </el-button>
-        <el-button @click="resetForm(ruleFormRef)">重置</el-button>
-      </el-form-item>
-    </el-form>
-  </template>
+  <el-form ref="ruleFormRef" :model="ruleForm" status-icon :rules="rules" label-width="auto" class="custom-ruleForm">
+    <h3 class="user_form_title">创建角色</h3>
+    <el-form-item label="角色" prop="role">
+      <el-input v-model="ruleForm.role" type="text" autocomplete="off" />
+    </el-form-item>
+    <el-form-item label="权限" prop="permissions">
+      <el-input v-model="ruleForm.permissions" type="text" autocomplete="off" />
+    </el-form-item>
+
+    <el-divider />
+
+    <el-form-item>
+      <el-button type="primary" @click="submitForm(ruleFormRef)">
+        添加
+      </el-button>
+      <el-button @click="resetForm(ruleFormRef)">重置</el-button>
+    </el-form-item>
+  </el-form>
+</template>
   
   <script lang="ts" setup>
   import { reactive, ref } from "vue";

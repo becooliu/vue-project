@@ -1,44 +1,23 @@
 <template>
-  <el-form
-    ref="ruleFormRef"
-    style="max-width: 600px"
-    :model="ruleForm"
-    status-icon
-    :rules="rules"
-    label-width="auto"
-    class="demo-ruleForm"
-  >
+  <el-form ref="ruleFormRef" :model="ruleForm" status-icon :rules="rules" label-width="auto" class="custom-ruleForm">
     <h3 class="user_form_title">注册账号</h3>
     <el-form-item label="账号" prop="username">
       <el-input v-model="ruleForm.username" type="text" autocomplete="off" />
     </el-form-item>
     <el-form-item label="密码" prop="password">
-      <el-input
-        v-model="ruleForm.password"
-        type="password"
-        autocomplete="off"
-      />
+      <el-input v-model="ruleForm.password" type="password" autocomplete="off" />
     </el-form-item>
     <el-form-item label="确认密码" prop="checkPass">
-      <el-input
-        v-model="ruleForm.checkPass"
-        type="password"
-        autocomplete="off"
-      />
+      <el-input v-model="ruleForm.checkPass" type="password" autocomplete="off" />
     </el-form-item>
-    
+
     <el-divider />
 
     <el-form-item label="昵称">
-      <el-input v-model="ruleForm.nickname" type="text"
-        autocomplete="off"
-      />
+      <el-input v-model="ruleForm.nickname" type="text" autocomplete="off" />
     </el-form-item>
     <el-form-item label="邮箱" prop="email">
-      <el-input v-model="ruleForm.email" 
-        type="text"
-        autocomplete="off"
-      />
+      <el-input v-model="ruleForm.email" type="text" autocomplete="off" />
     </el-form-item>
     <el-form-item label="性别">
       <el-select v-model="ruleForm.sex" placeholder="请选择">
@@ -48,12 +27,7 @@
       </el-select>
     </el-form-item>
     <el-form-item label="出生日期">
-      <el-date-picker
-        v-model="ruleForm.birthday"
-        type="date"
-        placeholder="出生日期"
-        size="default"
-      />
+      <el-date-picker v-model="ruleForm.birthday" type="date" placeholder="出生日期" size="default" />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm(ruleFormRef)">
