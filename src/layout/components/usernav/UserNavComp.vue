@@ -1,0 +1,77 @@
+<template>
+    <el-menu :default-active="activeIndex" class="el-menu-custom" mode="horizontal" :ellipsis="false" router
+        v-if="getLoginStatus">
+        <el-sub-menu index="2">
+            <template #title>
+                <div class="user-box">
+                    <el-avatar> {{ username?.slice(0, 1)?.toUpperCase() }} </el-avatar>
+                    <span class="user-welcome-text">欢迎您, {{ username }}</span>
+                </div>
+            </template>
+            <template v-if="getUserIsAdmin && getLoginStatus">
+                <el-menu-item index="2-3">重置密码</el-menu-item>
+            </template>
+            <el-menu-item index="/user/login" v-if="getLoginStatus" @click="logout">登出</el-menu-item>
+        </el-sub-menu>
+
+    </el-menu>
+</template>
+
+<script setup>
+import { RouterView } from "vue-router"
+import { ref } from "vue"
+import { deleteCookie } from "@/utils"
+import { storeToRefs } from 'pinia'
+
+const username = localStorage.getItem('userKey')
+
+// 引入用户相关的state
+import { useUserStatusStore } from '@/store/index'
+const store = useUserStatusStore()
+const { getLoginStatus, getUserIsAdmin } = storeToRefs(store)
+
+console.log('App store', getLoginStatus.value, getUserIsAdmin.value)
+
+const activeIndex = ref("1");
+
+function setLogoutData() {
+    localStorage.removeItem('userKey')
+    deleteCookie('userInfo')
+}
+
+function logout() {
+    store.userLogout()
+    setLogoutData()
+
+    ElNotification({
+        title: "帐号登出",
+        message: '账号登出成功',
+        type: "success"
+    })
+}
+
+</script>
+
+<style lang="scss">
+@import '@/styles/variable.scss';
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+.el-menu-custom {
+    height: $base-header-height;
+    border-bottom: none;
+}
+
+.user-box {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+
+    .user-welcome-text {
+        margin-left: 5px;
+        font-weight: 400;
+    }
+}
+</style>
