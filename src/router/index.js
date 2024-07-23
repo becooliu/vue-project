@@ -2,26 +2,6 @@ import { createRouter, createWebHistory } from "vue-router";
 import { useUserStatusStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { layoutChildrens } from './layoutChildens'
-const layoutChildrens = [
-  {
-    path: '/admin/userlist',
-    name: 'user_list',
-    component: () => import('@/components/admin/views/UserList.vue'),
-    meta: {
-      requireAuth: true, // 需要用户登录
-      roles: ['admin'] //受访问限制的角色
-    }
-  },
-  {
-    path: '/roles/create',
-    name: 'roles_create',
-    component: () => import('@/components/roles/create.vue'),
-    meta: {
-      requireAuth: true, // 需要用户登录
-      roles: ['admin'] //受访问限制的角色
-    }
-  }
-]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
