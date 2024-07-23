@@ -1,8 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useUserStatusStore } from '@/store'
 import { storeToRefs } from 'pinia'
-// import { ro } from 'element-plus/es/locale'
-
+import { layoutChildrens } from './layoutChildens'
 const layoutChildrens = [
   {
     path: '/admin/userlist',
@@ -30,7 +29,7 @@ const router = createRouter({
     {
       path: '/user/index',
       name: 'user_index',
-      component: () => import('@/components/user/Index.vue'),
+      component: () => import('@/components/user/index.vue'),
       meta: {
         title: '用户首页',
         requireAuth: true // 需要用户登录
@@ -39,23 +38,33 @@ const router = createRouter({
     {
       path: '/user/regist',
       name: 'user_regist',
-      component: () => import('@/components/user/views/RegistView.vue')
+      component: () => import('@/components/user/views/RegistView.vue'),
+      meta: {
+        title: '用户注册'
+      }
     },
     {
       path: '/user/login',
       name: 'user_login',
-      component: () => import('@/components/user/views/LoginView.vue')
+      component: () => import('@/components/user/views/LoginView.vue'),
+      meta: {
+        title: '用户登录'
+      }
     },
     {
       path: '/denied',
       name: 'denied',
-      component: () => import('@/components/denied/index.vue') // 无权访问
+      component: () => import('@/components/denied/index.vue'), // 无权访问
+      meta: {
+        title: '无权限访问'
+      }
     },
     {
       path: '/',
       name: 'layout',
       component: () => import('@/layout/index.vue'),
       meta: {
+        title: '管理首页',
         requireAuth: true,
         roles: ['admin']
       },
