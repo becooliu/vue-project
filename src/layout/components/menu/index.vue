@@ -1,6 +1,7 @@
 <template>
     <h5 class="sys-title">博客管理 V1.0</h5>
-    <el-menu router default-active="1" :default-openeds="['1']" class="el-menu-vertical-demo" active-color="#409eff">
+    <el-menu router default-active="1" :default-openeds="['1']" class="el-menu-vertical-demo manage-menu"
+        active-color="#409eff">
         <el-sub-menu index="1">
             <template #title>
                 <el-icon>
@@ -78,17 +79,17 @@
 
 <script lang="ts" setup>
 import {
-  Document,
-  Menu as IconMenu,
-  Location,
-  Setting,
-  Platform,
-  Menu,
-  Management,
-  Plus,
-  Edit,
-  Delete,
-  Avatar
+    Document,
+    Menu as IconMenu,
+    Location,
+    Setting,
+    Platform,
+    Menu,
+    Management,
+    Plus,
+    Edit,
+    Delete,
+    Avatar
 } from '@element-plus/icons-vue'
 const handleOpen = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
@@ -99,6 +100,9 @@ const handleClose = (key: string, keyPath: string[]) => {
 </script>
 
 <style lang="scss">
+.manage-menu {
+    border-right: none;
+}
     .sys-title {
         height: 50px;
         margin-top: 0;
