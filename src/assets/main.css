@@ -6,3 +6,8 @@
 .pagenation-default {
     margin-top: 10px;
 }
+.custom-ruleForm {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
