@@ -7,7 +7,9 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    Add: typeof import('./src/components/blog_category/add.vue')['default']
+    Add: typeof import('./src/components/blog/add.vue')['default']
+    BlogDetails: typeof import('./src/components/blog/BlogDetails.vue')['default']
+    BlogList: typeof import('./src/components/blog/BlogList.vue')['default']
     Create: typeof import('./src/components/roles/create.vue')['default']
     Denied: typeof import('./src/components/denied/index.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
@@ -28,6 +30,7 @@ declare module 'vue' {
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
     ElHeader: typeof import('element-plus/es')['ElHeader']
     ElIcon: typeof import('element-plus/es')['ElIcon']
+    ElImage: typeof import('element-plus/es')['ElImage']
     ElInput: typeof import('element-plus/es')['ElInput']
     ElLink: typeof import('element-plus/es')['ElLink']
     ElMain: typeof import('element-plus/es')['ElMain']
