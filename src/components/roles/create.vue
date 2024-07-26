@@ -8,8 +8,6 @@
       <el-input v-model="ruleForm.permissions" type="text" autocomplete="off" />
     </el-form-item>
 
-    <el-divider />
-
     <el-form-item>
       <el-button type="primary" @click="submitForm(ruleFormRef)">
         添加
