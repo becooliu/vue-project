@@ -8,6 +8,7 @@
                     <span class="user-welcome-text">欢迎您, {{ username }}</span>
                 </div>
             </template>
+            <el-menu-item index="/blog/add" v-if="getLoginStatus">发布博客</el-menu-item>
             <template v-if="getUserIsAdmin && getLoginStatus">
                 <el-menu-item index="2-3">重置密码</el-menu-item>
             </template>
@@ -18,7 +19,6 @@
 </template>
 
 <script setup>
-import { RouterView } from "vue-router"
 import { ref } from "vue"
 import { deleteCookie } from "@/utils"
 import { storeToRefs } from 'pinia'
