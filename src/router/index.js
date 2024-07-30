@@ -7,13 +7,40 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/blog/details/:_id',
+      name: 'blog_details',
+      component: () => import('@/components/blog/BlogDetails.vue'),
+      meta: {
+        title: '博客详情'
+      }
+    },
+    {
       path: '/user/index',
       name: 'user_index',
       component: () => import('@/components/user/index.vue'),
       meta: {
         title: '用户首页',
         requireAuth: true // 需要用户登录
-      }
+      },
+      children: [
+        {
+          path: '/blog/add',
+          name: 'blog_add',
+          component: () => import('@/components/blog/add.vue'),
+          meta: {
+            title: '写博客',
+            requireAuth: true
+          }
+        },
+        {
+          path: '/blog/list',
+          name: 'blog_list',
+          component: () => import('@/components/blog/BlogList.vue'),
+          meta: {
+            title: '博客列表'
+          }
+        }
+      ]
     },
     {
       path: '/user/regist',

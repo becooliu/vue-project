@@ -7,7 +7,7 @@
 
   <div class="blog-wrap">
     <div class="blog-item" v-for="item in filterTableData" :key="item._id">
-      <a class="flex-item" :href="`/blog/details/` + item._id">
+      <a class="flex-item" @click.prevent="goToBlogDetail(item._id)">
         <el-image :src="item?.src || defaultImgSrc" style="width: 15%;">
           <template #error>
             <div class="image-slot">
@@ -58,6 +58,7 @@
 import { computed, ref, reactive, onMounted } from 'vue'
 import instance from '@/axios/base';
 import { View, Comment, Picture } from '@element-plus/icons-vue'
+import router from '@/router';
 
 const defaultImgSrc = 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
 
@@ -114,6 +115,11 @@ const filterTableData = computed(() =>
 const CreatedAt = ((str) => {
   return new Date(str).toLocaleString()
 })
+
+const goToBlogDetail = (_id) => {
+  console.log(_id)
+  router.push(`/blog/details/${_id}`)
+}
 </script>
 <style scoped>
 .search-wrap {
@@ -123,6 +129,7 @@ const CreatedAt = ((str) => {
 .flex-item {
   display: flex;
   align-items: top;
+  cursor: pointer;
 }
 
 .blog-item {
