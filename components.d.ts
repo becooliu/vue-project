@@ -9,11 +9,13 @@ declare module 'vue' {
   export interface GlobalComponents {
     Add: typeof import('./src/components/blog/add.vue')['default']
     BlogDetails: typeof import('./src/components/blog/BlogDetails.vue')['default']
+    BlogHead: typeof import('./src/components/blog/BlogHead.vue')['default']
     BlogList: typeof import('./src/components/blog/BlogList.vue')['default']
     Create: typeof import('./src/components/roles/create.vue')['default']
     Denied: typeof import('./src/components/denied/index.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
+    ElBacktop: typeof import('element-plus/es')['ElBacktop']
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
     ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
     ElButton: typeof import('element-plus/es')['ElButton']
