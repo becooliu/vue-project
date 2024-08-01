@@ -10,6 +10,10 @@
     width: 100%;
     max-width: 600px;
     margin: 0 auto;
+    padding-top: 2rem;
+}
+.user_form_title {
+    margin-bottom: 1.5rem;
 }
 .blog-ruleForm {
     width: 100%;
