@@ -1,35 +1,68 @@
 <template>
+
     <div class="blog-details-wrap">
+        <BlogHead :likesData="likesData" />
         <div class="loading" v-if="loading">
             loading...
         </div>
         <article>
-            <h2 class="blog-title">{{ blogDetailsData.title }}</h2>
-            <p class="blog-sub-title">{{ blogDetailsData.desc }}</p>
+            <h2 class="blog-title">{{ blogDetailsData?.title }}</h2>
+            <p class="blog-sub-title">{{ blogDetailsData?.desc }}</p>
             <div class="blog-views-author">
-                <span class="view">
-                    <el-icon>
-                        <View />
-                    </el-icon>
-                    {{ blogDetailsData.views }}人已阅读
-                </span>
-                <span class="author">
-                    <el-icon>
-                        <User />
-                    </el-icon>
-                    作者：{{ blogDetailsData.user.username }}
-                </span>
+                <div class="left">
+                    <span class="view">
+                        <el-icon>
+                            <View />
+                        </el-icon>
+                        {{ blogDetailsData?.views }}人已阅读
+                    </span>
+                    <span class="author">
+                        <el-icon>
+                            <User />
+                        </el-icon>
+                        作者：{{ blogDetailsData?.user?.nickname || blogDetailsData?.user.username }}
+                    </span>
+
+                </div>
+                <div class="right">
+                    <span class="update-at">
+                        最近更新时间：{{ dateToLocaleString(blogDetailsData?.updatedAt) }}
+                    </span>
+                </div>
             </div>
             <ElDivider />
-            <p class="content">{{ blogDetailsData.content }}</p>
         </article>
+        <!--博客正文，使用vmd editor 的预览模式-->
+        <v-md-editor :model-value="blogDetailsData?.content" mode="preview"></v-md-editor>
     </div>
+
+    <!--返回顶部-->
+    <el-backtop :bottom="100">
+        <div style="
+        height: 100%;
+        width: 100%;
+        border-radius: 50%;
+        background-color: #369;
+        box-shadow: #aaa;
+        text-align: center;
+        line-height: 40px;
+        color: #1989fa;
+      ">
+            <el-icon>
+                <Top style="color: #fff;" />
+            </el-icon>
+        </div>
+    </el-backtop>
 </template>
 <script setup>
-import { View, User } from '@element-plus/icons-vue'
+import { View, User, Top } from '@element-plus/icons-vue'
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import instance from '@/axios/base'
+
+import BlogHead from './BlogHead.vue'
+
+import { dateToLocaleString } from '@/utils/index'
 
 const route = useRoute()
 
@@ -37,16 +70,20 @@ const blogDetailsData = ref(null)
 const loading = ref(false)
 const error = ref(null)
 
+const likesData = ref([])
+
 watch(() => route.params._id, getBlogData, { immediate: true })
 
 async function getBlogData(_id) {
     error.value = blogDetailsData.value = null
     loading.value = true
-    console.log('_id', _id)
     try {
         const blogData = await instance.get(`/blog/details/`, { params: { _id } })
-        console.log('blogData', blogData)
-        blogDetailsData.value = blogData.data.pageData
+        blogDetailsData.value = blogData.data
+        const categoryId = blogData.data.category._id
+        const blogLikes = await instance.get('/blog/likes', { params: { category: categoryId, blogId: _id } })
+        console.log('/blog/likes: ', blogLikes)
+        likesData.value = blogLikes.data
     } catch (err) {
         error.value = err.toString()
     } finally {
@@ -71,14 +108,19 @@ async function getBlogData(_id) {
     .blog-views-author {
         color: #999;
 
-        >span {
+        span {
             margin-right: 1.5rem;
         }
     }
 }
 
 article {
+    padding: 2rem 2.5rem;
 
+    .blog-views-author {
+        display: flex;
+        justify-content: space-between;
+    }
     .blog-title,
     .blog-sub-title {
         text-align: center;
