@@ -24,3 +24,7 @@ export const deleteCookie = name => {
   var cval = getCookie(name)
   if (cval != null) document.cookie = name + '=' + cval + ';path=/;expires=' + exp.toGMTString()
 }
+
+export const dateToLocaleString = str => {
+  return new Date(str).toLocaleString()
+}
