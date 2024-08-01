@@ -6,41 +6,44 @@
   </div>
 
   <div class="blog-wrap">
-    <div class="blog-item" v-for="item in filterTableData" :key="item._id">
-      <a class="flex-item" @click.prevent="goToBlogDetail(item._id)">
-        <el-image :src="item?.src || defaultImgSrc" style="width: 15%;">
-          <template #error>
-            <div class="image-slot">
-              <el-icon>
-                <Picture />
-              </el-icon>
+    <el-card v-for="item in filterTableData" :key="item._id" shadow="hover" class="blog-item"
+      @click.prevent="goToBlogDetail(item._id)">
+      <el-row>
+        <el-col :span="3">
+          <el-image :src="item?.src || defaultImgSrc">
+            <template #error>
+              <div class="image-slot">
+                <el-icon>
+                  <Picture />
+                </el-icon>
+              </div>
+            </template>
+          </el-image>
+        </el-col>
+        <el-col :span="21">
+          <div class="content-wrap">
+            <h4 class="blog-title">{{ item.title }}</h4>
+            <p class="sub-title">{{ item.desc }}</p>
+            <span class="author">作者：{{ item.user.username }}</span>
+            <span class="created-at">发布时间：{{ CreatedAt(item.createdAt) }}</span>
+            <div class="footer">
+              <span class="view">
+                <el-icon>
+                  <View />
+                </el-icon>
+                {{ item.views }}人已阅读
+              </span>
+              <span class="comment">
+                <el-icon>
+                  <Comment />
+                </el-icon>
+                {{ item.comments.length }} 条评论
+              </span>
             </div>
-          </template>
-        </el-image>
-        <div class="blog-content-wrap">
-          <h4 class="blog-title">{{ item.title }}</h4>
-          <p class="sub-title">{{ item.desc }}</p>
-          <span class="author">作者：{{ item.user.username }}</span>
-          <span class="created-at">发布时间：{{ CreatedAt(item.createdAt) }}</span>
-          <div class="footer">
-            <span class="view">
-              <el-icon>
-                <View />
-              </el-icon>
-              {{ item.views }}人已阅读
-            </span>
-            <span class="comment">
-              <el-icon>
-                <Comment />
-              </el-icon>
-              {{ item.comments.length }} 条评论
-            </span>
           </div>
-        </div>
-
-      </a>
-
-    </div>
+        </el-col>
+      </el-row>
+    </el-card>
 
   </div>
 
@@ -121,36 +124,20 @@ const goToBlogDetail = (_id) => {
   router.push(`/blog/details/${_id}`)
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .search-wrap {
   padding: 2em 1em 3em;
 }
 
-.flex-item {
-  display: flex;
-  align-items: top;
-  cursor: pointer;
-}
-
 .blog-item {
-  border: 1px solid #ddd;
   padding: 4px;
-  margin: 4px;
-  border-radius: 0 0 3px;
+  margin: 4px 4px 1rem;
+  cursor: pointer;
 
-  &:hover {
-    box-shadow: 0 0 4px #999;
-  }
-
-  .flex-item {
-    text-decoration: none;
-    color: #333;
-  }
-
-  .blog-content-wrap {
+  .content-wrap {
     position: relative;
-    padding: 1em;
-    flex-grow: 1;
+    padding: 0 1.5rem;
+    height: 100%;
 
     .blog-title {
       margin-top: 0;
