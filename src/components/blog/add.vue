@@ -1,82 +1,27 @@
 <template>
-  <el-form
-    ref="ruleFormRef"
-    :model="ruleForm"
-    status-icon
-    :rules="rules"
-    label-width="auto"
-    class="blog-ruleForm"
-  >
+  <el-form ref="ruleFormRef" :model="ruleForm" status-icon :rules="rules" label-width="auto" class="blog-ruleForm">
     <h3 class="user_form_title">发布博客</h3>
-    <el-form-item
-      label="分类"
-      prop="category"
-    >
-      <el-select
-        v-model="ruleForm.category"
-        placeholder="选择分类"
-        style="width: 100%"
-      >
-        <el-option
-          v-for="item in categoryArr"
-          :key="item._id"
-          :label="item.name"
-          :value="item._id"
-        />
+    <el-form-item label="分类" prop="category">
+      <el-select v-model="ruleForm.category" placeholder="选择分类" style="width: 100%">
+        <el-option v-for="item in categoryArr" :key="item._id" :label="item.name" :value="item._id" />
       </el-select>
     </el-form-item>
 
-    <el-form-item
-      label="标题"
-      prop="title"
-      required
-    >
-      <el-input
-        v-model="ruleForm.title"
-        type="text"
-        autocomplete="off"
-      />
+    <el-form-item label="标题" prop="title" required>
+      <el-input v-model="ruleForm.title" type="text" autocomplete="off" />
     </el-form-item>
-    <el-form-item
-      label="副标题"
-      prop="desc"
-    >
-      <el-input
-        v-model="ruleForm.desc"
-        type="text"
-        autocomplete="off"
-      />
+    <el-form-item label="副标题" prop="desc">
+      <el-input v-model="ruleForm.desc" type="text" autocomplete="off" />
     </el-form-item>
-    <el-form-item
-      label="关键字"
-      prop="keywords"
-    >
-      <el-input
-        v-model="ruleForm.keywords"
-        type="text"
-        autocomplete="off"
-        placeholder="关键字使用逗号,隔开"
-      />
+    <el-form-item label="关键字" prop="keywords">
+      <el-input v-model="ruleForm.keywords" type="text" autocomplete="off" placeholder="关键字使用逗号,隔开" />
     </el-form-item>
-    <el-form-item
-      label="正文"
-      prop="content"
-      required
-    >
-      <el-input
-        v-model="ruleForm.content"
-        :rows="5"
-        type="textarea"
-        autocomplete="off"
-        placeholder="请输入博客正文"
-      />
+    <el-form-item label="正文" prop="content" required>
+      <v-md-editor v-model="ruleForm.content" height="400px"></v-md-editor>
     </el-form-item>
 
     <el-form-item>
-      <el-button
-        type="primary"
-        @click="submitForm(ruleFormRef)"
-      >
+      <el-button type="primary" @click="submitForm(ruleFormRef)">
         发布博客
       </el-button>
       <el-button @click="resetForm(ruleFormRef)">重置</el-button>
