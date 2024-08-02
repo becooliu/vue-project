@@ -16,6 +16,9 @@
     <el-form-item label="关键字" prop="keywords">
       <el-input v-model="ruleForm.keywords" type="text" autocomplete="off" placeholder="关键字使用逗号,隔开" />
     </el-form-item>
+    <el-form-item label="封面图" prop="cover">
+      <el-input v-model="ruleForm.cover" type="text" autocomplete="off" placeholder="请输入图片链接" />
+    </el-form-item>
     <el-form-item label="正文" prop="content" required>
       <v-md-editor v-model="ruleForm.content" height="400px"></v-md-editor>
     </el-form-item>
@@ -45,6 +48,7 @@ const ruleForm = reactive({
   category: '',
   title: '',
   desc: '',
+  cover: '',
   keywords: '',
   content: ''
 })
@@ -89,6 +93,7 @@ const submitForm = formEl => {
         title: ruleForm.title,
         desc: ruleForm.desc,
         keywords: ruleForm.keywords,
+        cover: ruleForm.cover,
         content: ruleForm.content,
         user: currentUserId.value
       }
