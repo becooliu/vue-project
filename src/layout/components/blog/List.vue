@@ -6,13 +6,24 @@
         <el-table-column label="副标题" prop="desc" show-overflow-tooltip />
         <el-table-column label="封面图" prop="cover">
             <template #default="scopeRowCover">
-                <el-image style="width: 100px; height: 100px" :src="scopeRowCover.row.cover" fit="cover" />
+                <el-image style="width: 30px; height: 30px" :src="scopeRowCover.row.cover" fit="cover">
+                    <template #error>
+                        <div class="image-slot-error">
+                            <el-icon>
+                                <Picture />
+                            </el-icon>
+                        </div>
+                    </template>
+                </el-image>
             </template>
             <template #error>
                 <div class="image-slot">
-                    <el-icon><icon-picture /></el-icon>
+                    <el-icon>
+                        <Picture />
+                    </el-icon>
                 </div>
             </template>
+
         </el-table-column>
         <el-table-column label="所属分类" prop="category.name" />
         <el-table-column label="最后更新时间" show-overflow-tooltip>
@@ -90,7 +101,7 @@
 import { computed, ref, reactive, onMounted } from 'vue'
 import instance from '@/axios/base'
 import { dateToLocaleString } from '@/utils';
-import { Picture as IconPicture } from '@element-plus/icons-vue'
+import { Picture } from '@element-plus/icons-vue'
 
 const listData = ref()
 const totalCount = ref(1)
@@ -272,3 +283,11 @@ const deleteRow = (index, row) => {
         })
 }
 </script>
+
+<style scoped>
+.image-slot-error {
+    height: 100%;
+    text-align: center;
+    font-size: 30px;
+}
+</style>
