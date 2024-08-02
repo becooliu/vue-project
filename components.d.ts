@@ -49,6 +49,7 @@ declare module 'vue' {
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     Index: typeof import('./src/components/index/index.vue')['default']
+    List: typeof import('./src/components/admin/blog/List.vue')['default']
     LoginComp: typeof import('./src/components/user/LoginComp.vue')['default']
     LoginView: typeof import('./src/components/user/views/LoginView.vue')['default']
     RegistComp: typeof import('./src/components/user/RegistComp.vue')['default']
