@@ -86,12 +86,11 @@ router.beforeEach((to, from, next) => {
 
   //获取当前登录状态及用户角色
   const { getLoginStatus, getUserRole } = storeToRefs(store)
-
+  window.document.title = to.meta?.title
   // 判断该路由是否需要登录权限
   if (to.meta.requireAuth) {
     // 如果需要，则检验用户是否登录
     if (getLoginStatus?.value) {
-      console.log('router before each', getUserRole?.value)
       // 判断当前用户是否有访问该路由的权限
       // console.log(roles.value)
       if (to?.meta.roles) {
