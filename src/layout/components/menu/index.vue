@@ -7,12 +7,26 @@
                 <el-icon>
                     <platform />
                 </el-icon>
-                <span>Dashboard</span>
+                <span>管理面板</span>
             </template>
             <el-menu-item index="/admin/userlist">数据总览</el-menu-item>
             <el-menu-item index="/getApiVisited">分析</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="2">
+            <template #title>
+                <el-icon>
+                    <Notebook />
+                </el-icon>
+                <span>博客管理</span>
+            </template>
+            <el-menu-item index="/blog/lists">
+                <el-icon>
+                    <List />
+                </el-icon>
+                <span>博客列表</span>
+            </el-menu-item>
+        </el-sub-menu>
+        <el-sub-menu index="3">
             <template #title>
                 <el-icon>
                     <Menu />
@@ -38,7 +52,7 @@
                 <span>分类删除</span>
             </el-menu-item>
         </el-sub-menu>
-        <el-sub-menu index="3">
+        <el-sub-menu index="4">
             <template #title>
                 <el-icon>
                     <Management />
@@ -64,7 +78,7 @@
                 <span>角色删除</span>
             </el-menu-item>
         </el-sub-menu>
-        <el-sub-menu index="4">
+        <el-sub-menu index="5">
             <template #title>
                 <el-icon>
                     <Avatar />
@@ -84,6 +98,8 @@ import {
     Location,
     Setting,
     Platform,
+    Notebook,
+    List,
     Menu,
     Management,
     Plus,
