@@ -12,6 +12,7 @@
         </div>
       </template>
       <template v-if="getUserIsAdmin && getLoginStatus">
+        <el-menu-item index="/">网站管理</el-menu-item>
         <el-menu-item index="2-3">重置密码</el-menu-item>
       </template>
       <el-menu-item index="/blog/add" v-if="getLoginStatus">发布博客</el-menu-item>
