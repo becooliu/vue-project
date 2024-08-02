@@ -31,6 +31,16 @@ export const layoutChildrens = [
     }
   },
   {
+    path: '/blog/lists',
+    name: 'blog_lists',
+    component: () => import('@/layout/components/blog/List.vue'),
+    meta: {
+      title: '博客列表',
+      requireAuth: true, // 需要用户登录
+      roles: ['admin'] //受访问限制的角色
+    }
+  },
+  {
     path: '/blog_category/add',
     name: 'blog_category_create',
     component: () => import('@/components/blog_category/add.vue'),
