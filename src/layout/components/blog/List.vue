@@ -1,0 +1,274 @@
+<template>
+    <el-table :data="filterTableData" style="width: 100%">
+        <el-table-column label="序号" type="index" width="70px" />
+        <el-table-column label="作者" prop="user.username" />
+        <el-table-column label="标题" prop="title" show-overflow-tooltip />
+        <el-table-column label="副标题" prop="desc" show-overflow-tooltip />
+        <el-table-column label="封面图" prop="cover">
+            <template #default="scopeRowCover">
+                <el-image style="width: 100px; height: 100px" :src="scopeRowCover.row.cover" fit="cover" />
+            </template>
+            <template #error>
+                <div class="image-slot">
+                    <el-icon><icon-picture /></el-icon>
+                </div>
+            </template>
+        </el-table-column>
+        <el-table-column label="所属分类" prop="category.name" />
+        <el-table-column label="最后更新时间" show-overflow-tooltip>
+            <template #default="scopeRowUpdateAt">
+                <span>{{ computedDate(scopeRowUpdateAt.row.updatedAt) }}</span>
+            </template>
+        </el-table-column>
+
+        <el-table-column align="right">
+            <template #header>
+                <el-input v-model="search" size="small" placeholder="输入搜索条件" />
+            </template>
+            <template #default="scope">
+                <el-button size="small" type="primary" @click="handleEditDialogForm(scope.$index, scope.row)">
+                    编辑
+                </el-button>
+
+                <el-popconfirm title="确认删除此博客？" width="220" confirm-button-text="是" cancel-button-text="取消"
+                    @confirm="deleteRow(scope.$index, scope.row)">
+                    <template #reference>
+                        <el-button size="small" type="danger">删除</el-button>
+                    </template>
+                </el-popconfirm>
+            </template>
+        </el-table-column>
+    </el-table>
+
+    <!-- 显示分页 -->
+    <div class="pagenation-default">
+        <el-pagination v-model:current-page="currentPage1" v-model:page-size="pageSize10"
+            :page-sizes="[10, 20, 50, 100, 200, 500, 1000]" :small="small" :disabled="disabled" :background="background"
+            layout="total, sizes, prev, pager, next, jumper" :total="totalCount" @size-change="handleSizeChange"
+            @current-change="handleCurrentChange" @update:page-size="updatePageSize" />
+    </div>
+
+    <!-- 编辑博客 -->
+    <!-- <el-dialog v-model="editDialogFormVisible" title="编辑用户信息" width="500">
+      <el-form :model="form">
+        <el-form-item label="帐号" :label-width="formLabelWidth">
+          <el-input v-model="form.username" autocomplete="off" disabled />
+        </el-form-item>
+        <el-form-item label="昵称" :label-width="formLabelWidth">
+          <el-input v-model="form.nickname" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="出生日期" :label-width="formLabelWidth">
+          <el-date-picker
+          v-model="form.birthday"
+          type="date"
+          :disabled-date="disabledDate" 
+          placeholder="Pick a day"
+        />
+        </el-form-item>
+        <el-form-item label="性别" :label-width="formLabelWidth">
+          <el-select v-model="form.sex" placeholder="请选择">
+            <el-option label="男性" value="male" />
+            <el-option label="女性" value="female" />
+            <el-option label="保密" value="unknown" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="editDialogFormVisible = false">取消</el-button>
+          
+          <el-button type="primary" @click="confirmEditUserInfo">
+          确认
+        </el-button>
+        </div>
+  
+      </template>
+    </el-dialog> -->
+</template>
+
+<script lang="ts" setup>
+import { computed, ref, reactive, onMounted } from 'vue'
+import instance from '@/axios/base'
+import { dateToLocaleString } from '@/utils';
+import { Picture as IconPicture } from '@element-plus/icons-vue'
+
+const listData = ref()
+const totalCount = ref(1)
+
+//分页参数
+const currentPage = ref(1)
+const pagesize = ref(10)
+
+// 分页
+const currentPage1 = ref(1)
+const pageSize10 = ref(10)
+const small = ref(false)
+const background = ref(true)
+const disabled = ref(false)
+
+const handleSizeChange = (val: number) => {
+    pagesize.value = val
+}
+const handleCurrentChange = (val: number) => {
+    currentPage.value = val
+    getBlogList()
+}
+const updatePageSize = (val: number) => {
+    pagesize.value = val
+    getBlogList()
+}
+
+/* onMounted(() => {
+  getUserList()
+})  */
+function getBlogList() {
+    instance
+        .get(`/blog/list?pageSize=${pagesize.value}&currentPage=${currentPage.value}`)
+        .then(res => {
+            listData.value = res.data.pageData
+            console.log('listData.value.category: ', listData.value)
+            totalCount.value = res.data.totalCount
+        })
+        .catch(error => {
+            console.error(error)
+        })
+}
+getBlogList()
+
+const search = ref('')
+const filterTableData = computed(() =>
+    listData?.value?.filter(data => !search.value || data.title.toLowerCase().includes(search.value.toLowerCase()) || data.desc.toLowerCase().includes(search.value.toLowerCase()) || data.user.username.toLowerCase().includes(search.value.toLowerCase()))
+)
+
+const computedDate = (updateAt: String) => {
+    return dateToLocaleString(updateAt)
+}
+
+// 编辑用户参数
+const editDialogFormVisible = ref(false)
+const formLabelWidth = '140px'
+let form = reactive({
+    username: '',
+    cover: '',
+    title: '',
+    desc: '',
+    category: '',
+    updatedAt: ''
+})
+
+// 保存修改数据前，将当前正在修改的数据进行保存，以便点击保存按钮时，比对数据是否有修改
+let rowDataBeforeEdit = {
+    username: '',
+    title: '',
+    desc: '',
+    category: ''
+}
+const handleEditDialogForm = (index, row) => {
+    editDialogFormVisible.value = true
+    form = row
+    // 对修改前响应式数据进行解构，使其失去响应式功能
+    const { username, title, desc, category } = form
+    rowDataBeforeEdit = {
+        username,
+        title,
+        desc,
+        category
+    }
+    // console.log(index, row)
+}
+
+const disabledDate = (time: Date) => {
+    return time.getTime() > Date.now()
+}
+
+// 保存用户信息
+
+const confirmEditUserInfo = function () {
+    console.log('form: ', form)
+    //判断数据是否有被修改，如果没有修改，不做处理
+    if (
+        form.username == rowDataBeforeEdit.username &&
+        form.title == rowDataBeforeEdit.title &&
+        form.desc == rowDataBeforeEdit.desc &&
+        form.category == rowDataBeforeEdit.category
+    ) {
+        console.log('rowDataBeforeEdit: ', rowDataBeforeEdit)
+        ElNotification({
+            title: '保存数据',
+            message: '没有数据被修改，无需保存。',
+            type: 'warning'
+        })
+        return
+    }
+
+    // 保存修改的用户数据
+    const { username, title, desc, category } = form
+    const listData = {
+        username,
+        title,
+        category,
+        desc
+    }
+    instance
+        .post('/user/update_userinfo', listData)
+        .then(res => {
+            const { status, message } = res.data
+            console.log('status', status)
+            const type = status === 200 ? 'success' : 'error'
+            if (status === 200) {
+                // eslint-disable-next-line no-undef
+                ElNotification({
+                    title: '修改用户信息',
+                    message: message,
+                    type
+                })
+            }
+        })
+        .catch(err => {
+            // eslint-disable-next-line no-undef
+            ElNotification({
+                title: '修改用户信息',
+                message: err,
+                type: 'error'
+            })
+        })
+}
+const deleteRow = (index, row) => {
+    console.log(index, row)
+    const { _id } = row
+    const deleteBlog = {
+        _id,
+        currentPage: currentPage.value,
+        pagesize: pagesize.value
+    }
+
+    instance
+        .post('/blog/delete_blog', deleteBlog)
+        .then(res => {
+            const { status, message, pageData } = res.data
+            const type = status === 200 ? 'success' : 'error'
+            if (status === 200) {
+                listData.value = pageData
+                totalCount.value = Number(res.data.totalCount)
+                ElNotification({
+                    title: '删除博客',
+                    message: message,
+                    type
+                })
+            } else {
+                ElNotification({
+                    title: '删除博客',
+                    message: message,
+                    type: 'error'
+                })
+            }
+        })
+        .catch(err => {
+            ElNotification({
+                title: '删除用户',
+                message: err,
+                type: 'error'
+            })
+        })
+}
+</script>
