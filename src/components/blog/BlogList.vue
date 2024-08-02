@@ -10,7 +10,7 @@
       @click.prevent="goToBlogDetail(item._id)">
       <el-row>
         <el-col :span="3">
-          <el-image :src="item?.src || defaultImgSrc">
+          <el-image class="blog-cover" :src="item?.cover">
             <template #error>
               <div class="image-slot">
                 <el-icon>
@@ -134,6 +134,11 @@ const goToBlogDetail = (_id) => {
   margin: 4px 4px 1rem;
   cursor: pointer;
 
+  .blog-cover {
+    min-height: 130px;
+    text-align: center;
+    display: block;
+  }
   .content-wrap {
     position: relative;
     padding: 0 1.5rem;
