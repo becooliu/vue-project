@@ -7,9 +7,11 @@
         </template>
         <p class="text item">{{ apiVisitedCount }}</p>
     </el-card>
+    <BlogCount />
 </template>
 
 <script setup>
+import BlogCount from '@/layout/components/apivisited/BlogCount.vue'
 import instance from "@/axios/base";
 import { ref } from 'vue'
 

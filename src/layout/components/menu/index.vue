@@ -33,6 +33,12 @@
                 </el-icon>
                 <span>分类管理</span>
             </template>
+            <el-menu-item index="/blog/count">
+                <el-icon>
+                    <Plus />
+                </el-icon>
+                <span>分类统计</span>
+            </el-menu-item>
             <el-menu-item index="/blog_category/add">
                 <el-icon>
                     <Plus />
