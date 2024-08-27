@@ -60,41 +60,36 @@
     </div>
 
     <!-- 编辑博客 -->
-    <!-- <el-dialog v-model="editDialogFormVisible" title="编辑用户信息" width="500">
-      <el-form :model="form">
-        <el-form-item label="帐号" :label-width="formLabelWidth">
-          <el-input v-model="form.username" autocomplete="off" disabled />
-        </el-form-item>
-        <el-form-item label="昵称" :label-width="formLabelWidth">
-          <el-input v-model="form.nickname" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="出生日期" :label-width="formLabelWidth">
-          <el-date-picker
-          v-model="form.birthday"
-          type="date"
-          :disabled-date="disabledDate" 
-          placeholder="Pick a day"
-        />
-        </el-form-item>
-        <el-form-item label="性别" :label-width="formLabelWidth">
-          <el-select v-model="form.sex" placeholder="请选择">
-            <el-option label="男性" value="male" />
-            <el-option label="女性" value="female" />
-            <el-option label="保密" value="unknown" />
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="editDialogFormVisible = false">取消</el-button>
-          
-          <el-button type="primary" @click="confirmEditUserInfo">
-          确认
-        </el-button>
-        </div>
-  
-      </template>
-    </el-dialog> -->
+    <el-dialog v-model="editDialogFormVisible" title="编辑博客" width="500">
+        <el-form :model="form">
+            <el-form-item label="作者" :label-width="formLabelWidth">
+                <el-input v-model="form.user.username" autocomplete="off" disabled />
+            </el-form-item>
+            <el-form-item label="标题" :label-width="formLabelWidth">
+                <el-input v-model="form.title" autocomplete="off" />
+            </el-form-item>
+            <el-form-item label="副标题" :label-width="formLabelWidth">
+                <el-input v-model="form.desc" autocomplete="off" />
+            </el-form-item>
+            <el-form-item label="封面图" :label-width="formLabelWidth">
+                <el-input v-model="form.cover" type="upload" autocomplete="off" placeholder="请输入图片链接" />
+                <div class="block-image">
+                    <el-image :src="form.cover" />
+                </div>
+            </el-form-item>
+
+        </el-form>
+        <template #footer>
+            <div class="dialog-footer">
+                <el-button @click="editDialogFormVisible = false">取消</el-button>
+
+                <el-button type="primary" @click="confirmEditBlogInfo">
+                    确认
+                </el-button>
+            </div>
+
+        </template>
+    </el-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -129,15 +124,12 @@ const updatePageSize = (val: number) => {
     getBlogList()
 }
 
-/* onMounted(() => {
-  getUserList()
-})  */
 function getBlogList() {
     instance
         .get(`/blog/list?pageSize=${pagesize.value}&currentPage=${currentPage.value}`)
         .then(res => {
             listData.value = res.data.pageData
-            console.log('listData.value.category: ', listData.value)
+            // console.log('listData.value.category: ', listData.value)
             totalCount.value = res.data.totalCount
         })
         .catch(error => {
@@ -155,53 +147,45 @@ const computedDate = (updateAt: String) => {
     return dateToLocaleString(updateAt)
 }
 
-// 编辑用户参数
+// 编辑博客参数
 const editDialogFormVisible = ref(false)
 const formLabelWidth = '140px'
 let form = reactive({
+    _id: '',
     username: '',
-    cover: '',
     title: '',
     desc: '',
-    category: '',
-    updatedAt: ''
+    cover: ''
 })
 
 // 保存修改数据前，将当前正在修改的数据进行保存，以便点击保存按钮时，比对数据是否有修改
 let rowDataBeforeEdit = {
-    username: '',
     title: '',
     desc: '',
-    category: ''
+    cover: ''
 }
 const handleEditDialogForm = (index, row) => {
     editDialogFormVisible.value = true
     form = row
+    // console.log('edit form: ', form)
     // 对修改前响应式数据进行解构，使其失去响应式功能
-    const { username, title, desc, category } = form
+    const { title, desc, cover } = form
     rowDataBeforeEdit = {
-        username,
         title,
         desc,
-        category
+        cover
     }
     // console.log(index, row)
 }
 
-const disabledDate = (time: Date) => {
-    return time.getTime() > Date.now()
-}
-
-// 保存用户信息
-
-const confirmEditUserInfo = function () {
+// 保存博客信息
+const confirmEditBlogInfo = function () {
     console.log('form: ', form)
     //判断数据是否有被修改，如果没有修改，不做处理
     if (
-        form.username == rowDataBeforeEdit.username &&
         form.title == rowDataBeforeEdit.title &&
         form.desc == rowDataBeforeEdit.desc &&
-        form.category == rowDataBeforeEdit.category
+        form.cover == rowDataBeforeEdit.cover
     ) {
         console.log('rowDataBeforeEdit: ', rowDataBeforeEdit)
         ElNotification({
@@ -212,16 +196,16 @@ const confirmEditUserInfo = function () {
         return
     }
 
-    // 保存修改的用户数据
-    const { username, title, desc, category } = form
+    // 保存修改的博客数据
+    const { _id, title, desc, cover } = form
     const listData = {
-        username,
+        _id,
         title,
-        category,
+        cover,
         desc
     }
     instance
-        .post('/user/update_userinfo', listData)
+        .post('/blog/update_bloginfo', listData)
         .then(res => {
             const { status, message } = res.data
             console.log('status', status)
@@ -229,7 +213,7 @@ const confirmEditUserInfo = function () {
             if (status === 200) {
                 // eslint-disable-next-line no-undef
                 ElNotification({
-                    title: '修改用户信息',
+                    title: '修改博客信息',
                     message: message,
                     type
                 })
@@ -238,12 +222,18 @@ const confirmEditUserInfo = function () {
         .catch(err => {
             // eslint-disable-next-line no-undef
             ElNotification({
-                title: '修改用户信息',
+                title: '修改博客信息',
                 message: err,
                 type: 'error'
             })
         })
 }
+
+/**
+ * 删除博客
+ * @param index 
+ * @param row 
+ */
 const deleteRow = (index, row) => {
     console.log(index, row)
     const { _id } = row
@@ -289,5 +279,10 @@ const deleteRow = (index, row) => {
     height: 100%;
     text-align: center;
     font-size: 30px;
+}
+
+.block-image {
+    padding: 1.5rem 0;
+    width: 85%;
 }
 </style>
