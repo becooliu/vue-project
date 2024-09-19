@@ -60,7 +60,7 @@
     </div>
 
     <!-- 编辑博客 -->
-    <el-dialog v-model="editDialogFormVisible" title="编辑博客" width="500">
+    <el-dialog v-model="editDialogFormVisible" title="编辑博客" width="600">
         <el-form :model="form">
             <el-form-item label="作者" :label-width="formLabelWidth">
                 <el-input v-model="form.user.username" autocomplete="off" disabled />
@@ -69,7 +69,7 @@
                 <el-input v-model="form.title" autocomplete="off" />
             </el-form-item>
             <el-form-item label="副标题" :label-width="formLabelWidth">
-                <el-input v-model="form.desc" autocomplete="off" />
+                <el-input v-model="form.desc" type="textarea" autocomplete="off" :rows="2" />
             </el-form-item>
             <el-form-item label="封面图" :label-width="formLabelWidth">
                 <el-input v-model="form.cover" type="upload" autocomplete="off" placeholder="请输入图片链接" />
@@ -93,10 +93,14 @@
 </template>
 
 <script lang="ts" setup>
+import router from '@/router'
 import { computed, ref, reactive, onMounted } from 'vue'
 import instance from '@/axios/base'
 import { dateToLocaleString } from '@/utils';
 import { Picture } from '@element-plus/icons-vue'
+
+import { useCurrentEditBlogStore } from '@/store';
+const store = useCurrentEditBlogStore()
 
 const listData = ref()
 const totalCount = ref(1)
@@ -152,7 +156,7 @@ const editDialogFormVisible = ref(false)
 const formLabelWidth = '140px'
 let form = reactive({
     _id: '',
-    username: '',
+    user: null,
     title: '',
     desc: '',
     cover: ''
@@ -165,16 +169,19 @@ let rowDataBeforeEdit = {
     cover: ''
 }
 const handleEditDialogForm = (index, row) => {
-    editDialogFormVisible.value = true
+    // console.log('row._id:', row._id)
+    store.setBlogId(row._id)
+    router.push({ name: 'blog_updateContent' })
+    /* editDialogFormVisible.value = true
     form = row
-    // console.log('edit form: ', form)
+    console.log('edit row: ', row)
     // 对修改前响应式数据进行解构，使其失去响应式功能
     const { title, desc, cover } = form
     rowDataBeforeEdit = {
         title,
         desc,
         cover
-    }
+    } */
     // console.log(index, row)
 }
 

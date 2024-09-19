@@ -33,6 +33,15 @@ const router = createRouter({
           }
         },
         {
+          path: '/blog/updateContent',
+          name: 'blog_updateContent',
+          component: () => import('@/components/blog/UpdateContent.vue'),
+          meta: {
+            title: '更新博客',
+            requireAuth: true
+          }
+        },
+        {
           path: '/blog/list',
           name: 'blog_list',
           component: () => import('@/components/blog/BlogList.vue'),
