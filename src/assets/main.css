@@ -20,3 +20,11 @@
     max-width: 900px;
     margin: 0 auto;
 }
+
+/* 博客管理-分析*/
+.el-card  .el-card__header {
+    background-color: #e9e9e9;
+}
+.el-card  p {
+    font-size: 36px;
+}

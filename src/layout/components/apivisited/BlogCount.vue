@@ -1,11 +1,11 @@
 <template>
-    <el-card style="max-width: 480px">
+    <el-card style="max-width: 480px" shadow="hover">
         <template #header>
             <div class="card-header">
                 <span>博客总数</span>
             </div>
         </template>
-        <p class="text item">{{ blogAmount }}</p>
+        <p class="text item custom">{{ blogAmount }}</p>
     </el-card>
 </template>
 

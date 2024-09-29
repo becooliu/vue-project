@@ -3,14 +3,28 @@
     <el-menu router default-active="1" :default-openeds="['1']" class="el-menu-vertical-demo manage-menu"
         active-color="#409eff">
         <el-sub-menu index="1">
+
             <template #title>
                 <el-icon>
-                    <platform />
+                    <DataAnalysis />
                 </el-icon>
                 <span>管理面板</span>
             </template>
-            <el-menu-item index="/admin/userlist">数据总览</el-menu-item>
-            <el-menu-item index="/getApiVisited">分析</el-menu-item>
+
+            <el-menu-item index="/admin/userlist">
+                <el-icon>
+                    <View />
+                </el-icon>
+                <span>数据总览</span>
+            </el-menu-item>
+            <el-menu-item index="/getApiVisited">
+                <el-icon>
+                    <Coin />
+                </el-icon>
+                <span>分析</span>
+            </el-menu-item>
+
+
         </el-sub-menu>
         <el-sub-menu index="2">
             <template #title>
@@ -90,7 +104,10 @@ import {
     Document,
     Menu as IconMenu,
     Platform,
+    DataAnalysis,
     Notebook,
+    View,
+    Coin,
     List,
     Menu,
     Management,
