@@ -33,12 +33,6 @@
                 </el-icon>
                 <span>分类管理</span>
             </template>
-            <el-menu-item index="/blog/count">
-                <el-icon>
-                    <Plus />
-                </el-icon>
-                <span>分类统计</span>
-            </el-menu-item>
             <el-menu-item index="/blog_category/add">
                 <el-icon>
                     <Plus />
@@ -49,13 +43,7 @@
                 <el-icon>
                     <Edit />
                 </el-icon>
-                <span>分类修改</span>
-            </el-menu-item>
-            <el-menu-item index="/category/remove">
-                <el-icon>
-                    <Delete />
-                </el-icon>
-                <span>分类删除</span>
+                <span>分类维护</span>
             </el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="4">
@@ -101,8 +89,6 @@
 import {
     Document,
     Menu as IconMenu,
-    Location,
-    Setting,
     Platform,
     Notebook,
     List,

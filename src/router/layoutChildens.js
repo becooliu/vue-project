@@ -49,5 +49,15 @@ export const layoutChildrens = [
       requireAuth: true, // 需要用户登录
       roles: ['admin'] //受访问限制的角色
     }
+  },
+  {
+    path: '/category/update',
+    name: 'blog_category_update',
+    component: () => import('@/components/blog_category/update.vue'),
+    meta: {
+      title: '修改博客分类',
+      requireAuth: true, // 需要用户登录
+      roles: ['admin'] //受访问限制的角色
+    }
   }
 ]
