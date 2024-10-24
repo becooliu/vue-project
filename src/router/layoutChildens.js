@@ -21,6 +21,16 @@ export const layoutChildrens = [
     }
   },
   {
+    path: '/roles/list',
+    name: 'roles_list',
+    component: () => import('@/components/roles/roleList.vue'),
+    meta: {
+      title: '用户角色列表',
+      requireAuth: true, // 需要用户登录
+      roles: ['admin'] //受访问限制的角色
+    }
+  },
+  {
     path: '/getApiVisited',
     name: 'get_api_visited',
     component: () => import('@/layout/components/apivisited/index.vue'),

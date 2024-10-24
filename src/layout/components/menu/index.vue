@@ -73,17 +73,17 @@
                 </el-icon>
                 <span>角色添加</span>
             </el-menu-item>
+            <el-menu-item index="/roles/list">
+                <el-icon>
+                    <List />
+                </el-icon>
+                <span>角色列表</span>
+            </el-menu-item>
             <el-menu-item index="/roles/update">
                 <el-icon>
                     <Edit />
                 </el-icon>
                 <span>角色修改</span>
-            </el-menu-item>
-            <el-menu-item index="/roles/remove">
-                <el-icon>
-                    <Delete />
-                </el-icon>
-                <span>角色删除</span>
             </el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="5">
