@@ -30,25 +30,13 @@
       @current-change="handleCurrentChange" @update:page-size="updatePageSize" />
   </div>
 
-  <!-- 编辑用户 -->
-  <el-dialog v-model="editDialogFormVisible" title="编辑用户信息" width="500">
+  <!-- 编辑角色 -->
+  <el-dialog v-model="editDialogFormVisible" title="编辑角色信息" width="500">
     <el-form :model="form">
-      <el-form-item label="帐号" :label-width="formLabelWidth">
-        <el-input v-model="form.username" autocomplete="off" disabled />
+      <el-form-item label="角色" :label-width="formLabelWidth">
+        <el-input v-model="form.role" autocomplete="off" />
       </el-form-item>
-      <el-form-item label="昵称" :label-width="formLabelWidth">
-        <el-input v-model="form.nickname" autocomplete="off" />
-      </el-form-item>
-      <el-form-item label="出生日期" :label-width="formLabelWidth">
-        <el-date-picker v-model="form.birthday" type="date" :disabled-date="disabledDate" placeholder="Pick a day" />
-      </el-form-item>
-      <el-form-item label="性别" :label-width="formLabelWidth">
-        <el-select v-model="form.sex" placeholder="请选择">
-          <el-option label="男性" value="male" />
-          <el-option label="女性" value="female" />
-          <el-option label="保密" value="unknown" />
-        </el-select>
-      </el-form-item>
+
     </el-form>
     <template #footer>
       <div class="dialog-footer">
@@ -111,7 +99,7 @@ const filterTableData = computed(() =>
   roleData?.value?.filter(
     (data) =>
       !search.value ||
-      data.username.toLowerCase().includes(search.value.toLowerCase())
+      data.role.toLowerCase().includes(search.value.toLowerCase())
   )
 )
 
@@ -119,35 +107,25 @@ const filterTableData = computed(() =>
 const editDialogFormVisible = ref(false)
 const formLabelWidth = '140px'
 let form = reactive({
-  username: '',
-  nickname: '',
-  birthday: '',
-  sex: ''
+  role: '',
+  _id: ''
 })
 
 // 保存修改数据前，将当前正在修改的数据进行保存，以便点击保存按钮时，比对数据是否有修改
 let rowDataBeforeEdit = {
-  username: '',
-  nickname: '',
-  birthday: '',
-  sex: ''
+  role: '',
+  _id: ''
 }
 const handleEditDialogForm = (index, row) => {
   editDialogFormVisible.value = true
   form = row
   // 对修改前响应式数据进行解构，使其失去响应式功能
-  const { username, nickname, birthday, sex } = form
+  const { role, _id } = form
   rowDataBeforeEdit = {
-    username,
-    nickname,
-    birthday,
-    sex
+    role,
+    _id
   }
   // console.log(index, row)
-}
-
-const disabledDate = (time: Date) => {
-  return time.getTime() > Date.now()
 }
 
 // 保存用户信息
@@ -155,7 +133,7 @@ const disabledDate = (time: Date) => {
 const confirmEditUserInfo = function () {
   console.log('form: ', form)
   //判断数据是否有被修改，如果没有修改，不做处理
-  if (form.username == rowDataBeforeEdit.username && form.sex == rowDataBeforeEdit.sex && form.nickname == rowDataBeforeEdit.nickname && form.birthday == rowDataBeforeEdit.birthday) {
+  if (form.role == rowDataBeforeEdit.role) {
     console.log('rowDataBeforeEdit: ', rowDataBeforeEdit)
     ElNotification({
       title: "保存数据",
@@ -166,14 +144,12 @@ const confirmEditUserInfo = function () {
   }
 
   // 保存修改的用户数据
-  const { username, nickname, sex, birthday } = form
+  const { role, _id } = form
   const roleData = {
-    username,
-    nickname,
-    birthday,
-    sex
+    role,
+    _id
   }
-  instance.post('/user/update_userinfo', roleData).then(res => {
+  instance.post('/user/update_role', roleData).then(res => {
     const { status, message } = res.data
     console.log('status', status)
     const type = status === 200 ? "success" : "error";
