@@ -12,8 +12,8 @@
           编辑
         </el-button>
 
-        <el-popconfirm title="确认删除此用户？" width="220" confirm-button-text="是" cancel-button-text="取消"
-          @confirm="deleteUser(scope.$index, scope.row)">
+        <el-popconfirm title="确认删除此角色？" width="220" confirm-button-text="是" cancel-button-text="取消"
+          @confirm="deleteRole(scope.$index, scope.row)">
           <template #reference>
             <el-button size="small" type="danger">删除</el-button>
           </template>
@@ -143,13 +143,30 @@ const confirmEditUserInfo = function () {
     return
   }
 
-  // 保存修改的用户数据
+  /**
+   * 保存修改的用户数据
+   */
+
+  // 判断角色名称是否已存在
+  const isRoleExist = (role: string) => {
+    return roleData.value.find(item => item.role.toLowerCase() === role)
+  }
+
   const { role, _id } = form
-  const roleData = {
+  if (isRoleExist(role)) {
+    ElNotification({
+      title: "修改用户信息",
+      message: `角色 ${role} 已存在，请更换其他名称。`,
+      type: 'error',
+    });
+    return
+  }
+
+  const newRole = {
     role,
     _id
   }
-  instance.post('/user/update_role', roleData).then(res => {
+  instance.post('/user/update_role', newRole).then(res => {
     const { status, message } = res.data
     console.log('status', status)
     const type = status === 200 ? "success" : "error";
@@ -171,30 +188,30 @@ const confirmEditUserInfo = function () {
       });
     });
 }
-const deleteUser = (index, row) => {
+const deleteRole = (index, row) => {
   console.log(index, row)
-  const { username, _id } = row
-  const deleteUser = {
+  const { role, _id } = row
+  const deleteRole = {
     _id,
-    username,
+    role,
     currentPage: currentPage.value,
     pagesize: pagesize.value
   }
 
-  instance.post('/user/delete_user', deleteUser).then(res => {
+  instance.post('/user/delete_role', deleteRole).then(res => {
     const { status, message, pageData } = res.data
     const type = status === 200 ? 'success' : 'error'
     if (status === 200) {
       roleData.value = pageData
       totalCount.value = Number(res.data.totalCount)
       ElNotification({
-        title: "删除用户",
+        title: "删除角色",
         message: message,
         type,
       });
     } else {
       ElNotification({
-        title: "删除用户",
+        title: "删除角色",
         message: message,
         type: "error"
       });
@@ -202,7 +219,7 @@ const deleteUser = (index, row) => {
   })
     .catch(err => {
       ElNotification({
-        title: "删除用户",
+        title: "删除角色",
         message: err,
         type: "error",
       });
