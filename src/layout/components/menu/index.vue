@@ -71,19 +71,19 @@
                 <el-icon>
                     <Plus />
                 </el-icon>
-                <span>角色添加</span>
+                <span>新增角色</span>
             </el-menu-item>
             <el-menu-item index="/roles/list">
                 <el-icon>
-                    <List />
-                </el-icon>
-                <span>角色列表</span>
-            </el-menu-item>
-            <el-menu-item index="/roles/update">
-                <el-icon>
                     <Edit />
                 </el-icon>
-                <span>角色修改</span>
+                <span>编辑角色</span>
+            </el-menu-item>
+            <el-menu-item index="/roles/permissionEdit">
+                <el-icon>
+                    <EditPen />
+                </el-icon>
+                <span>权限管理</span>
             </el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="5">
@@ -113,6 +113,7 @@ import {
     Management,
     Plus,
     Edit,
+    EditPen,
     Delete,
     Avatar
 } from '@element-plus/icons-vue'
