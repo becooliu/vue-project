@@ -15,7 +15,7 @@ export const layoutChildrens = [
     name: 'roles_create',
     component: () => import('@/components/roles/create.vue'),
     meta: {
-      title: '创建用户角色',
+      title: '新增角色',
       requireAuth: true, // 需要用户登录
       roles: ['admin'] //受访问限制的角色
     }
@@ -25,7 +25,17 @@ export const layoutChildrens = [
     name: 'roles_list',
     component: () => import('@/components/roles/roleList.vue'),
     meta: {
-      title: '用户角色列表',
+      title: '编辑角色',
+      requireAuth: true, // 需要用户登录
+      roles: ['admin'] //受访问限制的角色
+    }
+  },
+  {
+    path: '/roles/permissionEdit',
+    name: 'permission_edit',
+    component: () => import('@/components/roles/editPermission.vue'),
+    meta: {
+      title: '权限管理',
       requireAuth: true, // 需要用户登录
       roles: ['admin'] //受访问限制的角色
     }
