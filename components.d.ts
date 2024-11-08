@@ -14,6 +14,7 @@ declare module 'vue' {
     BlogList: typeof import('./src/components/blog/BlogList.vue')['default']
     Create: typeof import('./src/components/roles/create.vue')['default']
     Denied: typeof import('./src/components/denied/index.vue')['default']
+    EditPermission: typeof import('./src/components/roles/editPermission.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElBacktop: typeof import('element-plus/es')['ElBacktop']
