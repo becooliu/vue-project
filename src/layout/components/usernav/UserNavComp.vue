@@ -8,6 +8,7 @@
                     <span class="user-welcome-text">欢迎您, {{ username }}</span>
                 </div>
             </template>
+            <el-menu-item index="/blog/list">博客首页 </el-menu-item>
             <el-menu-item index="/blog/add" v-if="getLoginStatus">发布博客</el-menu-item>
             <template v-if="getUserIsAdmin && getLoginStatus">
                 <el-menu-item index="/">网站管理</el-menu-item>
