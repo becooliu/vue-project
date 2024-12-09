@@ -14,7 +14,7 @@
                         <el-icon>
                             <View />
                         </el-icon>
-                        {{ blogDetailsData?.views }}人已阅读
+                        {{ viewCount }}人已阅读
                     </span>
                     <span class="author">
                         <el-icon>
@@ -59,10 +59,13 @@ import { View, User, Top } from '@element-plus/icons-vue'
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import instance from '@/axios/base'
+import { onMounted } from 'vue'
 
 import BlogHead from './BlogHead.vue'
 
 import { dateToLocaleString } from '@/utils/index'
+
+const store = useBlogViewsStore()
 
 const route = useRoute()
 
@@ -71,6 +74,12 @@ const loading = ref(false)
 const error = ref(null)
 
 const likesData = ref([])
+
+
+const viewCount = ref(0)
+const curBlogId = ref('')
+
+
 
 watch(() => route.params._id, getBlogData, { immediate: true })
 
@@ -81,8 +90,8 @@ async function getBlogData(_id) {
         const blogData = await instance.get(`/blog/details/`, { params: { _id } })
         blogDetailsData.value = blogData.data
         const categoryId = blogData.data.category._id
+        viewCount.value = blogData.data.views
         const blogLikes = await instance.get('/blog/likes', { params: { category: categoryId, blogId: _id } })
-        console.log('/blog/likes: ', blogLikes)
         likesData.value = blogLikes.data
     } catch (err) {
         error.value = err.toString()
@@ -90,6 +99,22 @@ async function getBlogData(_id) {
         loading.value = false
     }
 }
+
+onMounted(async () => {
+    curBlogId.value = location.pathname.split('blog/details/').pop()
+    await getBlogData(curBlogId.value)
+    let _views = viewCount.value + 1
+    const viewsData = {
+        _id: curBlogId.value,
+        views: _views
+    }
+    const updataViews = await instance.post('/blog/views_increase', viewsData)
+    if (updataViews.data.status == 200) {
+        console.log(updataViews.data.message)
+    }
+
+})
+
 
 /* onBeforeRouteUpdate(async (to, from) => {
     const blogId = to.params._id
