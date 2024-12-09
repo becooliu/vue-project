@@ -144,8 +144,13 @@ const goToBlogDetail = (_id) => {
     padding: 0 1.5rem;
     height: 100%;
 
-    .blog-title {
-      margin-top: 0;
+    .blog-title,
+      .sub-title {
+        margin-top: 0;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+        overflow: hidden;
     }
 
     .author,
