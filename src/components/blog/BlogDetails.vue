@@ -34,6 +34,33 @@
         </article>
         <!--博客正文，使用vmd editor 的预览模式-->
         <v-md-editor :model-value="blogDetailsData?.content" mode="preview"></v-md-editor>
+        <ElDivider />
+        <div class="comments-wrapper">
+            <h4 class="title">评论</h4>
+            <p class="no-comments" v-if="!comments.length">暂无评论</p>
+            <!--发表评论-->
+            <el-form ref="ruleFormRef" v-if="comments.length || !showCommentForm" :model="ruleForm" status-icon
+                :rules="rules" label-width="auto">
+                <el-form-item prop="comment">
+                    <el-input v-model="ruleForm.comment" type="textarea" autocomplete="off" />
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="submitForm(ruleFormRef)"
+                        @keyup.enter="submitForm(ruleFormRef)">发表评论</el-button>
+                    <el-button @click="resetForm(ruleFormRef)">重置</el-button>
+                </el-form-item>
+            </el-form>
+            <!--评论列表-->
+            <ul class="comments-list" v-if="comments.length">
+                <li class="comment-item" v-for="item in comments" :key="item.randomId">
+                    <div class="avatar">
+                        <div class="username">{{ item.username }}</div>
+                        <span class="comment-time">{{ timeStringToDate(item.randomId) }}</span>
+                    </div>
+                    <p class="comment">{{ item.comment }}</p>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <!--返回顶部-->
@@ -56,16 +83,16 @@
 </template>
 <script setup>
 import { View, User, Top } from '@element-plus/icons-vue'
-import { ref, watch } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import instance from '@/axios/base'
 import { onMounted } from 'vue'
 
+import { timeStringToDate } from '@/utils/index'
+
 import BlogHead from './BlogHead.vue'
 
 import { dateToLocaleString } from '@/utils/index'
-
-const store = useBlogViewsStore()
 
 const route = useRoute()
 
@@ -75,11 +102,12 @@ const error = ref(null)
 
 const likesData = ref([])
 
-
 const viewCount = ref(0)
 const curBlogId = ref('')
 
-
+const comments = ref([])
+const ruleFormRef = ref(null)
+const showCommentForm = ref(true)
 
 watch(() => route.params._id, getBlogData, { immediate: true })
 
@@ -91,6 +119,8 @@ async function getBlogData(_id) {
         blogDetailsData.value = blogData.data
         const categoryId = blogData.data.category._id
         viewCount.value = blogData.data.views
+        comments.value = blogData.data.comments
+        console.log('comments', comments.value)
         const blogLikes = await instance.get('/blog/likes', { params: { category: categoryId, blogId: _id } })
         likesData.value = blogLikes.data
     } catch (err) {
@@ -103,6 +133,7 @@ async function getBlogData(_id) {
 onMounted(async () => {
     curBlogId.value = location.pathname.split('blog/details/').pop()
     await getBlogData(curBlogId.value)
+    // 更新博客阅读量
     let _views = viewCount.value + 1
     const viewsData = {
         _id: curBlogId.value,
@@ -115,13 +146,59 @@ onMounted(async () => {
 
 })
 
+/**
+ * 评论
+ */
+const ruleForm = reactive({
+    comment: "",
+});
 
-/* onBeforeRouteUpdate(async (to, from) => {
-    const blogId = to.params._id
-    console.log('blogId', blogId)
-    const blogData = await instance.get(`/blog/details/`, { _id: blogId })
-    console.log(blogData)
-}) */
+const validateComment = (rule, value, callback) => {
+    if (value === "") {
+        callback(new Error("评论内容不能为空。"));
+    }
+    callback();
+};
+const rules = reactive({
+    comment: [{ validator: validateComment, trigger: "blur" }]
+})
+
+const submitForm = (form) => {
+    if (!form) return
+    form.validate(async valid => {
+        if (valid) {
+            const params = {
+                _id: curBlogId.value,
+                replyId: '', //回复某个评论时，记录下那个评论的Id(时间戳)
+                randomId: new Date().getTime(), // 发表评论的时间戳
+                comment: ruleForm.comment,
+                username: localStorage.getItem('userKey') //评论的作者
+            }
+            try {
+                const commentResponse = await instance.post('/blog/add_comment', params)
+
+                const commentsArr = commentResponse.data.comments
+                comments.value = commentsArr
+                showCommentForm.value = !!!commentsArr.length
+            } catch (error) {
+
+            }
+        } else {
+            ElNotification({
+                title: "发表评论",
+                message: '发表评论失败，请核对你填写的数据是否正确。',
+                type: "error",
+            });
+            console.log("error submit!");
+        }
+    })
+}
+
+const resetForm = (formEl) => {
+    if (!formEl) return;
+    formEl.resetFields();
+}
+
 </script>
 
 <style lang="scss">
@@ -146,6 +223,7 @@ article {
         display: flex;
         justify-content: space-between;
     }
+
     .blog-title,
     .blog-sub-title {
         text-align: center;
@@ -162,6 +240,25 @@ article {
     .content {
         line-height: 1.9rem;
         text-indent: 2rem;
+    }
+}
+
+/**
+*评论
+*/
+.comments-wrapper {
+    .title {
+        margin-bottom: 1em;
+    }
+
+    .no-comments {
+        font-style: italic;
+        font-size: 18px;
+        color: #666;
+    }
+
+    .comments-list {
+        list-style: none;
     }
 }
 </style>
