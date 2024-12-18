@@ -1,1 +1,1 @@
-export { isEmail, setCookie, getCookie, deleteCookie, dateToLocaleString } from './tools'
+export { isEmail, setCookie, getCookie, deleteCookie, dateToLocaleString, timeStringToDate } from './tools'
