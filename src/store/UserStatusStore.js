@@ -16,7 +16,6 @@ export const useUserStatusStore = defineStore('userStatus', () => {
 
   // 获取登录状态
   const getLoginStatus = computed(() => {
-    console.log('getLoginStatus', localStorage.getItem('userKey')?.length > 0 || isLogin.value)
     return isLogin.value ? isLogin.value : localStorage.getItem('userKey')?.length > 0
   })
 
