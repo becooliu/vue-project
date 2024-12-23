@@ -53,11 +53,15 @@
             <!--评论列表-->
             <ul class="comments-list" v-if="comments.length">
                 <li class="comment-item" v-for="item in comments" :key="item.randomId">
-                    <div class="avatar">
-                        <div class="username">{{ item.username }}</div>
-                        <span class="comment-time">{{ timeStringToDate(item.randomId) }}</span>
+                    <div class="avatar-container">
+                        <div class="avatar">{{ item.username.slice(0, 1).toUpperCase() }}</div>
+                        <div class="info">
+                            <div class="username">{{ item.username }}</div>
+                            <span class="comment-time">{{ timeStringToDate(item.randomId) }}</span>
+                            <p class="comment">{{ item.comment }}</p>
+                        </div>
+
                     </div>
-                    <p class="comment">{{ item.comment }}</p>
                 </li>
             </ul>
         </div>
@@ -259,6 +263,45 @@ article {
 
     .comments-list {
         list-style: none;
+
+        .comment-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .avatar-container {
+            display: flex;
+            justify-content: left;
+            align-content: flex-start;
+
+            .avatar {
+                width: 3.2rem;
+                height: 3.2rem;
+                text-align: center;
+                font-size: 2rem;
+                background-color: #369;
+                color: #fff;
+                border-radius: 50%;
+            }
+
+            .info {
+                margin-left: 0.5rem;
+
+                .username {
+                    font-size: 1.2rem;
+                }
+
+                .comment-time {
+                    font-size: 0.6rem;
+                    color: #999;
+                }
+
+                .comment {
+                    font-size: 0.9rem;
+                    margin-top: 0.4rem;
+                    line-height: 1.2rem;
+                }
+            }
+        }
     }
 }
 </style>
