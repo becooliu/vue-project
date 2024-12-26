@@ -1,58 +1,61 @@
 <template>
-  <div class="search-wrap">
-    <el-input v-model="search" placeholder="输入搜索关键字">
-      <template #append>查找</template>
-    </el-input>
-  </div>
+  <div class="blog-lists-wrap">
+    <div class="search-wrap">
+      <el-input v-model="search" placeholder="输入搜索关键字">
+        <template #append>查找</template>
+      </el-input>
+    </div>
 
-  <div class="blog-wrap">
-    <el-card v-for="item in filterTableData" :key="item._id" shadow="hover" class="blog-item"
-      @click.prevent="goToBlogDetail(item._id)">
-      <el-row>
-        <el-col :span="3">
-          <el-image class="blog-cover" :src="item?.cover">
-            <template #error>
-              <div class="image-slot">
-                <el-icon>
-                  <Picture />
-                </el-icon>
+    <div class="blog-wrap">
+      <el-card v-for="item in filterTableData" :key="item._id" shadow="hover" class="blog-item"
+        @click.prevent="goToBlogDetail(item._id)">
+        <el-row>
+          <el-col :span="3">
+            <el-image class="blog-cover" :src="item?.cover">
+              <template #error>
+                <div class="image-slot">
+                  <el-icon>
+                    <Picture />
+                  </el-icon>
+                </div>
+              </template>
+            </el-image>
+          </el-col>
+          <el-col :span="21">
+            <div class="content-wrap">
+              <h5 class="blog-title">{{ item.title }}</h5>
+              <p class="sub-title">{{ item.desc }}</p>
+              <span class="author">作者：{{ item.user.username }}</span>
+              <span class="created-at">发布时间：{{ CreatedAt(item.createdAt) }}</span>
+              <div class="footer">
+                <span class="view">
+                  <el-icon>
+                    <View />
+                  </el-icon>
+                  {{ item.views }}人已阅读
+                </span>
+                <span class="comment">
+                  <el-icon>
+                    <Comment />
+                  </el-icon>
+                  {{ item.comments.length }} 条评论
+                </span>
               </div>
-            </template>
-          </el-image>
-        </el-col>
-        <el-col :span="21">
-          <div class="content-wrap">
-            <h4 class="blog-title">{{ item.title }}</h4>
-            <p class="sub-title">{{ item.desc }}</p>
-            <span class="author">作者：{{ item.user.username }}</span>
-            <span class="created-at">发布时间：{{ CreatedAt(item.createdAt) }}</span>
-            <div class="footer">
-              <span class="view">
-                <el-icon>
-                  <View />
-                </el-icon>
-                {{ item.views }}人已阅读
-              </span>
-              <span class="comment">
-                <el-icon>
-                  <Comment />
-                </el-icon>
-                {{ item.comments.length }} 条评论
-              </span>
             </div>
-          </div>
-        </el-col>
-      </el-row>
-    </el-card>
+          </el-col>
+        </el-row>
+      </el-card>
 
-  </div>
+    </div>
 
-  <!-- 显示分页 -->
-  <div class="pagenation-default">
-    <el-pagination v-model:current-page="currentPage1" v-model:page-size="pageSize10"
-      :page-sizes="[10, 20, 50, 100, 200, 500, 1000]" :small="small" :disabled="disabled" :background="background"
-      layout="total, sizes, prev, pager, next, jumper" :total="totalCount" @size-change="handleSizeChange"
-      @current-change="handleCurrentChange" @update:page-size="updatePageSize" />
+    <!-- 显示分页 -->
+    <div class="pagenation-default">
+      <el-pagination v-model:current-page="currentPage1" v-model:page-size="pageSize10"
+        :page-sizes="[10, 20, 50, 100, 200, 500, 1000]" :small="small" :disabled="disabled" :background="background"
+        layout="total, sizes, prev, pager, next, jumper" :total="totalCount" @size-change="handleSizeChange"
+        @current-change="handleCurrentChange" @update:page-size="updatePageSize" />
+    </div>
+
   </div>
 
 </template>
@@ -125,6 +128,12 @@ const goToBlogDetail = (_id) => {
 }
 </script>
 <style lang="scss" scoped>
+.blog-lists-wrap {
+  width: 80%;
+  padding: 2rem;
+  margin: 0 auto;
+}
+
 .search-wrap {
   padding: 2em 1em 3em;
 }
@@ -139,18 +148,27 @@ const goToBlogDetail = (_id) => {
     text-align: center;
     display: block;
   }
+
   .content-wrap {
     position: relative;
     padding: 0 1.5rem;
     height: 100%;
 
     .blog-title,
-      .sub-title {
-        margin-top: 0;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 1;
-        overflow: hidden;
+    .sub-title {
+      margin-top: 0;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+      overflow: hidden;
+    }
+
+    .blog-title {
+      font-size: 1.2rem;
+    }
+
+    .sub-title {
+      font-size: 1rem;
     }
 
     .author,
