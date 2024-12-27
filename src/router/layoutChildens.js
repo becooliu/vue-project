@@ -63,7 +63,7 @@ export const layoutChildrens = [
   {
     path: '/blog_category/add',
     name: 'blog_category_create',
-    component: () => import('@/components/blog_category/add.vue'),
+    component: () => import('@/components/blog_category/addCategory.vue'),
     meta: {
       title: '新增博客分类',
       requireAuth: true, // 需要用户登录
