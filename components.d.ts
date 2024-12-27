@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     _UpdateContent: (typeof import('./src/components/blog/_UpdateContent.vue'))['default']
     Add: typeof import('./src/components/blog/add.vue')['default']
+    AddCategory: typeof import('./src/components/blog_category/addCategory.vue')['default']
     BlogDetails: typeof import('./src/components/blog/BlogDetails.vue')['default']
     BlogHead: typeof import('./src/components/blog/BlogHead.vue')['default']
     BlogList: typeof import('./src/components/blog/BlogList.vue')['default']
