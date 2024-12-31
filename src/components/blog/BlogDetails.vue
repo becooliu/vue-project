@@ -39,26 +39,29 @@
             <h4 class="title">评论</h4>
             <p class="no-comments" v-if="!comments.length">暂无评论</p>
             <!--发表评论-->
-            <el-form ref="ruleFormRef" v-if="comments.length || !showCommentForm" :model="ruleForm" status-icon
-                :rules="rules" label-width="auto">
+            <el-form ref="ruleFormRef" v-if="showCommentForm" :model="ruleForm" status-icon :rules="rules"
+                label-width="auto">
                 <el-form-item prop="comment">
-                    <el-input v-model="ruleForm.comment" type="textarea" autocomplete="off" />
+                    <el-input ref="commentInputRef" v-model="ruleForm.comment" type="textarea" autocomplete="off" />
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm(ruleFormRef)"
-                        @keyup.enter="submitForm(ruleFormRef)">发表评论</el-button>
+                    <el-button v-show="!showReplyButton" type="primary" @click="addComment(ruleFormRef)"
+                        @keyup.enter="addComment(ruleFormRef)">发表评论</el-button>
+                    <el-button v-show="showReplyButton" type="primary" @click="submitReplyComment(ruleFormRef)"
+                        @keyup.enter="submitReplyComment(ruleFormRef)">回复评论</el-button>
                     <el-button @click="resetForm(ruleFormRef)">重置</el-button>
                 </el-form-item>
             </el-form>
             <!--评论列表-->
-            <ul class="comments-list" v-if="comments.length">
+            <ul class="comments-list" v-if="comments?.length">
                 <li class="comment-item" v-for="item in comments" :key="item.randomId">
                     <div class="avatar-container">
                         <div class="avatar">{{ item.username.slice(0, 1).toUpperCase() }}</div>
                         <div class="info">
                             <div class="username">{{ item.username }}</div>
-                            <span class="comment-time">{{ timeStringToDate(item.randomId) }}</span>
-                            <p class="comment">{{ item.comment }}</p>
+                            <span class="comment-time">{{ formatTimeText(item.randomId) }}</span>
+                            <div class="comment">{{ item.comment }} <span class="reply"
+                                    @click="replyComment(item.username, item.randomId)">回复</span></div>
                         </div>
 
                     </div>
@@ -112,6 +115,7 @@ const curBlogId = ref('')
 const comments = ref([])
 const ruleFormRef = ref(null)
 const showCommentForm = ref(true)
+const showReplyButton = ref(false)
 
 watch(() => route.params._id, getBlogData, { immediate: true })
 
@@ -123,8 +127,7 @@ async function getBlogData(_id) {
         blogDetailsData.value = blogData.data
         const categoryId = blogData.data.category._id
         viewCount.value = blogData.data.views
-        comments.value = blogData.data.comments
-        console.log('comments', comments.value)
+        comments.value = blogData.data.comments.reverse()
         const blogLikes = await instance.get('/blog/likes', { params: { category: categoryId, blogId: _id } })
         likesData.value = blogLikes.data
     } catch (err) {
@@ -167,7 +170,7 @@ const rules = reactive({
     comment: [{ validator: validateComment, trigger: "blur" }]
 })
 
-const submitForm = (form) => {
+const addComment = (form) => {
     if (!form) return
     form.validate(async valid => {
         if (valid) {
@@ -178,22 +181,108 @@ const submitForm = (form) => {
                 comment: ruleForm.comment,
                 username: localStorage.getItem('userKey') //评论的作者
             }
-            try {
-                const commentResponse = await instance.post('/blog/add_comment', params)
-
-                const commentsArr = commentResponse.data.comments
-                comments.value = commentsArr
-                showCommentForm.value = !!!commentsArr.length
-            } catch (error) {
-
-            }
+            sendCommentData(params)
         } else {
             ElNotification({
                 title: "发表评论",
-                message: '发表评论失败，请核对你填写的数据是否正确。',
+                message: '发表评论失败，请核对你填写的数据是否正确，且数据不能为空。',
                 type: "error",
             });
             console.log("error submit!");
+        }
+    })
+}
+const sendCommentData = async (params) => {
+    try {
+        const commentResponse = await instance.post('/blog/add_comment', params)
+
+        console.log('commentResponse', commentResponse)
+        const commentsArr = commentResponse?.data?.data
+        comments.value = commentsArr
+        // showCommentForm.value = !!!commentsArr.length
+        ElNotification({
+            title: "发表评论",
+            message: '发表评论成功。',
+            type: "success",
+        });
+    } catch (error) {
+        console.log(error)
+        ElNotification({
+            title: "发表评论",
+            message: '发表评论失败，请查看报错信息或联系管理员。',
+            type: "error",
+        });
+    }
+
+}
+
+// 格式化评论时间
+const formatTimeText = (timestamp) => {
+    const _time = (new Date().getTime() - Number(timestamp)) / 1000
+    let string = ''
+    switch (true) {
+        case (_time < 60 * 60):
+            //console.log('几分钟前')
+            string = `${Math.floor(_time / 60)}分钟前`
+            // Math.floor(_time / 60)
+            break;
+        case (_time >= 60 * 60 && _time < 60 * 60 * 24):
+            string = `${Math.floor(_time / (60 * 60))}小时前`
+            break;
+        case (_time >= 60 * 60 * 24 && _time < 60 * 60 * 24 * 2):
+            string = `${Math.floor(_time / (60 * 60 * 24))}天前`
+            break;
+        case (_time >= 60 * 60 * 24 * 2):
+            string = timeStringToDate(timestamp)
+            break;
+        default:
+            string = timeStringToDate(timestamp)
+    }
+    return string
+}
+
+/**
+ * 回复评论
+ * 
+ */
+import { nextTick } from 'vue'
+const commentInputRef = ref('')
+const originRandomId = ref('')
+
+const replyComment = (username, randomId) => {
+    originRandomId.value = randomId
+    showReplyButton.value = true
+    focusInput()
+    ruleForm.comment = `回复 ${username}: `
+}
+
+// 点击回复评论时，使输入框聚焦
+const focusInput = () => {
+    nextTick(() => {
+        if (commentInputRef.value) {
+            commentInputRef.value.focus()
+        }
+    })
+}
+
+const submitReplyComment = (form) => {
+    if (!form) return
+    form.validate(async valid => {
+        if (valid) {
+            const params = {
+                _id: curBlogId.value,
+                replyId: originRandomId.value, //回复某个评论时，记录下那个评论的Id(时间戳)
+                randomId: new Date().getTime(), // 发表评论的时间戳
+                comment: ruleForm.comment.replace(/回复.*: /, ''),
+                username: localStorage.getItem('userKey') //评论的作者
+            }
+            sendCommentData(params)
+        } else {
+            ElNotification({
+                title: "发表评论",
+                message: '评论内容验证不通过，发表评论失败。',
+                type: "success",
+            })
         }
     })
 }
@@ -263,6 +352,7 @@ article {
 
     .comments-list {
         list-style: none;
+        padding-inline-start: 0;
 
         .comment-item {
             margin-bottom: 1.5rem;
@@ -287,7 +377,7 @@ article {
                 margin-left: 0.5rem;
 
                 .username {
-                    font-size: 1.2rem;
+                    font-size: 1rem;
                 }
 
                 .comment-time {
@@ -299,6 +389,16 @@ article {
                     font-size: 0.9rem;
                     margin-top: 0.4rem;
                     line-height: 1.2rem;
+                }
+            }
+
+            .reply {
+                margin-left: 0.6rem;
+                color: #999;
+                cursor: pointer;
+
+                &:hover {
+                    color: #666;
                 }
             }
         }
