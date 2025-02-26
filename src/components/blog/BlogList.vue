@@ -38,7 +38,7 @@
                   <el-icon>
                     <Comment />
                   </el-icon>
-                  {{ item.comments.length }} 条评论
+                  {{ commentsCount?.[item._id] || 0 }} 条评论
                 </span>
               </div>
             </div>
@@ -81,6 +81,7 @@ const pageSize10 = ref(10)
 const small = ref(false)
 const background = ref(true)
 const disabled = ref(false)
+const commentsCount = ref(null)
 
 const handleSizeChange = (val: number) => {
   pagesize.value = val
@@ -108,6 +109,36 @@ function getBlogList() {
     })
 }
 getBlogList()
+
+// 获取评论数据
+function getAllComments() {
+  instance.get('/comments/get_comment').then(res => {
+    commentsCount.value = rowComments(res.data.data)
+
+  }).catch(error => {
+    console.log(error)
+  })
+}
+getAllComments()
+
+
+/**
+ * 获取所有评论的统计数据
+ * @param {Array} data
+ * @returns
+ */
+
+// 将返回的数据格式化为 blogId 和评论数的键值对： {6735b0f7576e22e1975cf7f8: 4}
+const rowComments = data => {
+  const result = data.reduce((acc, cur) => {
+    if (!acc.has(cur.blogId)) {
+      acc.set(cur.blogId, 0)
+    }
+    acc.set(cur.blogId, acc.get(cur.blogId) + 1 + cur.replies.length)
+    return acc
+  }, new Map())
+  return Object.fromEntries(result)
+}
 
 const search = ref('')
 const filterTableData = computed(() =>
