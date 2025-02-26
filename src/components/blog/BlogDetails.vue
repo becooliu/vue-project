@@ -54,16 +54,28 @@
             </el-form>
             <!--评论列表-->
             <ul class="comments-list" v-if="comments?.length">
-                <li class="comment-item" v-for="item in comments" :key="item.randomId">
+                <li class="comment-item" v-for="item in comments" :key="item._id">
                     <div class="avatar-container">
-                        <div class="avatar">{{ item.username.slice(0, 1).toUpperCase() }}</div>
+                        <div class="avatar">{{ item?.author?.username.slice(0, 1).toUpperCase() }}</div>
                         <div class="info">
-                            <div class="username">{{ item.username }}</div>
-                            <span class="comment-time">{{ formatTimeText(item.randomId) }}</span>
-                            <div class="comment">{{ item.comment }} <span class="reply"
-                                    @click="replyComment(item.username, item.randomId)">回复</span></div>
+                            <div class="username">{{ item.author.username }}</div>
+                            <span class="comment-time">{{ formatTimeText(item.createdAt) }}</span>
+                            <div class="comment">{{ item.content }} <span class="reply"
+                                    @click="replyComment(item.author.username, item._id)">回复</span></div>
                         </div>
-
+                    </div>
+                    <!--回复列表-->
+                    <div class="avatar-container reply-container" v-if="item.replies.length"
+                        v-for="reply in item.replies">
+                        <div class="avatar">{{ reply?.username.slice(0, 1).toUpperCase() }}</div>
+                        <div class="info">
+                            <div class="username">{{ reply.username }}<span class="reply-author">回复<em>{{
+            item.author.username }}</em></span>
+                            </div>
+                            <span class="comment-time">{{ formatTimeText(reply.createdAt) }}</span>
+                            <div class="comment">{{ reply.comment }} <span class="reply"
+                                    @click="replyComment(reply.username, reply._id)">回复</span></div>
+                        </div>
                     </div>
                 </li>
             </ul>
@@ -124,10 +136,12 @@ async function getBlogData(_id) {
     loading.value = true
     try {
         const blogData = await instance.get(`/blog/details/`, { params: { _id } })
+        const commentsData = await instance.get(`/comments/get_comment`, { params: { blogId: _id } })
+        console.log('commentsData', commentsData)
         blogDetailsData.value = blogData.data
         const categoryId = blogData.data.category._id
         viewCount.value = blogData.data.views
-        comments.value = blogData.data.comments.reverse()
+        comments.value = commentsData.data.data
         const blogLikes = await instance.get('/blog/likes', { params: { category: categoryId, blogId: _id } })
         likesData.value = blogLikes.data
     } catch (err) {
@@ -175,13 +189,12 @@ const addComment = (form) => {
     form.validate(async valid => {
         if (valid) {
             const params = {
-                _id: curBlogId.value,
+                blogId: curBlogId.value,
                 replyId: '', //回复某个评论时，记录下那个评论的Id(时间戳)
-                randomId: new Date().getTime(), // 发表评论的时间戳
                 comment: ruleForm.comment,
-                username: localStorage.getItem('userKey') //评论的作者
+                userId: localStorage.getItem('userId') //评论的作者的id
             }
-            sendCommentData(params)
+            await sendCommentData(params)
         } else {
             ElNotification({
                 title: "发表评论",
@@ -194,10 +207,19 @@ const addComment = (form) => {
 }
 const sendCommentData = async (params) => {
     try {
-        const commentResponse = await instance.post('/blog/add_comment', params)
+        const commentResponse = await instance.post('/comments/add_comment', params)
 
         console.log('commentResponse', commentResponse)
-        const commentsArr = commentResponse?.data?.data
+        const commentsArr = commentResponse?.data.data
+        commentsArr.forEach(item => {
+            if (item.replies.length) {
+                item.replies.sort((a, b) => {
+                    return a.createdAt - b.createdAt
+                })
+            } else {
+                return item
+            }
+        });
         comments.value = commentsArr
         // showCommentForm.value = !!!commentsArr.length
         ElNotification({
@@ -218,7 +240,7 @@ const sendCommentData = async (params) => {
 
 // 格式化评论时间
 const formatTimeText = (timestamp) => {
-    const _time = (new Date().getTime() - Number(timestamp)) / 1000
+    const _time = (new Date().getTime() - new Date(timestamp).valueOf()) / 1000
     let string = ''
     switch (true) {
         case (_time < 60 * 60):
@@ -233,10 +255,10 @@ const formatTimeText = (timestamp) => {
             string = `${Math.floor(_time / (60 * 60 * 24))}天前`
             break;
         case (_time >= 60 * 60 * 24 * 2):
-            string = timeStringToDate(timestamp)
+            string = timeStringToDate(new Date(timestamp).valueOf())
             break;
         default:
-            string = timeStringToDate(timestamp)
+            string = timeStringToDate(new Date(timestamp).valueOf())
     }
     return string
 }
@@ -247,10 +269,10 @@ const formatTimeText = (timestamp) => {
  */
 import { nextTick } from 'vue'
 const commentInputRef = ref('')
-const originRandomId = ref('')
+const originCommentId = ref('')
 
-const replyComment = (username, randomId) => {
-    originRandomId.value = randomId
+const replyComment = (username, _id) => {
+    originCommentId.value = _id
     showReplyButton.value = true
     focusInput()
     ruleForm.comment = `回复 ${username}: `
@@ -270,13 +292,13 @@ const submitReplyComment = (form) => {
     form.validate(async valid => {
         if (valid) {
             const params = {
-                _id: curBlogId.value,
-                replyId: originRandomId.value, //回复某个评论时，记录下那个评论的Id(时间戳)
-                randomId: new Date().getTime(), // 发表评论的时间戳
+                _id: originCommentId.value,
+                blogId: curBlogId.value,
                 comment: ruleForm.comment.replace(/回复.*: /, ''),
-                username: localStorage.getItem('userKey') //评论的作者
+                userId: localStorage.getItem('userId'), //评论的作者的id
+                username: localStorage.getItem('userKey') // 评论的作者的用户名
             }
-            sendCommentData(params)
+            await addReply(params)
         } else {
             ElNotification({
                 title: "发表评论",
@@ -285,6 +307,28 @@ const submitReplyComment = (form) => {
             })
         }
     })
+}
+
+const addReply = async (params) => {
+    try {
+        const replyResponse = await instance.post('/comments/add_reply', params)
+
+        console.log('replyResponse', replyResponse)
+        comments.value = replyResponse.data.data
+
+        ElNotification({
+            title: "回复评论",
+            message: '回复评论成功。',
+            type: "error",
+        })
+    } catch (error) {
+        console.log(error)
+        ElNotification({
+            title: "回复评论",
+            message: '回复评论失败，请查看报错信息或联系管理员。',
+            type: "error",
+        });
+    }
 }
 
 const resetForm = (formEl) => {
@@ -363,6 +407,26 @@ article {
             justify-content: left;
             align-content: flex-start;
 
+            &.reply-container {
+                margin-top: 0.5rem;
+                margin-left: 3.2rem;
+
+                .avatar {
+                    width: 1.6rem;
+                    height: 1.6rem;
+                    text-align: center;
+                    font-size: 1rem;
+                    background-color: #369;
+                    color: #fff;
+                    border-radius: 50%;
+                }
+
+                .reply-author {
+                    margin-left: 1em;
+                    color: #999;
+                    font-size: 0.9rem;
+                }
+            }
             .avatar {
                 width: 3.2rem;
                 height: 3.2rem;
@@ -398,7 +462,7 @@ article {
                 cursor: pointer;
 
                 &:hover {
-                    color: #666;
+                    color: #369;
                 }
             }
         }
