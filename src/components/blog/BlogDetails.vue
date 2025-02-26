@@ -319,7 +319,7 @@ const addReply = async (params) => {
         ElNotification({
             title: "回复评论",
             message: '回复评论成功。',
-            type: "error",
+            type: "success",
         })
     } catch (error) {
         console.log(error)
