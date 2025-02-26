@@ -41,6 +41,7 @@ export const useUserStatusStore = defineStore('userStatus', () => {
     isLogin.value = true
     isAdmin.value = Boolean(userStoreData.isAdmin)
     localStorage.setItem('userKey', userStoreData.username)
+    localStorage.setItem('userId', userStoreData._id)
   }
 
   //设置登出后的状态

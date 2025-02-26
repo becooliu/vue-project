@@ -85,6 +85,7 @@ const submitForm = (formEl) => {
           console.log('isAdmin', isAdmin)
           // 登录成功后，设置相关的状态
           const userStoreData = {
+            _id,
             username,
             isAdmin
           }
