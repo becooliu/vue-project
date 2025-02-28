@@ -11,12 +11,15 @@
           <span class="user-welcome-text">欢迎您 , {{ username }}</span>
         </div>
       </template>
-      <template v-if="getUserIsAdmin && getLoginStatus">
+      <template v-if="getUserIsAdmin">
         <el-menu-item index="/">网站管理</el-menu-item>
-        <el-menu-item index="2-3">重置密码</el-menu-item>
       </template>
-      <el-menu-item index="/blog/add" v-if="getLoginStatus">发布博客</el-menu-item>
-      <el-menu-item index="/user/login" v-if="getLoginStatus" @click="logout">登出</el-menu-item>
+      <template v-else>
+        <el-menu-item index="/blog/list/my">管理我的发布</el-menu-item>
+      </template>
+      <el-menu-item index="/blog/add">发布博客</el-menu-item>
+      <el-menu-item index="2-3">修改密码</el-menu-item>
+      <el-menu-item index="/user/login" @click="logout">登出</el-menu-item>
       <!-- <el-sub-menu index="2-4">
         <template #title>item four</template>
         <el-menu-item index="2-4-1">item one</el-menu-item>
