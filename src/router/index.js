@@ -48,6 +48,14 @@ const router = createRouter({
           meta: {
             title: '博客列表'
           }
+        },
+        {
+          path: '/blog/list/my',
+          name: 'blog_list_my',
+          component: () => import('@/layout/components/blog/List.vue'),
+          meta: {
+            title: '管理我的发布'
+          }
         }
       ]
     },
