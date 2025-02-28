@@ -99,7 +99,8 @@ const updatePageSize = (val: number) => {
   getUserList()
 })  */
 function getBlogList() {
-  instance.get(`/blog/list?pageSize=${pagesize.value}&currentPage=${currentPage.value}`)
+  const userId = localStorage.getItem('userId')
+  instance.get(`/blog/list?pageSize=${pagesize.value}&currentPage=${currentPage.value}&userId=${userId}`)
     .then(res => {
       blogData.value = res.data.pageData
       console.log('totalCount: ', totalCount)

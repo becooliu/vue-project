@@ -129,8 +129,9 @@ const updatePageSize = (val: number) => {
 }
 
 function getBlogList() {
+    const userId = localStorage.getItem('userId')
     instance
-        .get(`/blog/list?pageSize=${pagesize.value}&currentPage=${currentPage.value}`)
+        .get(`/blog/list?pageSize=${pagesize.value}&currentPage=${currentPage.value}&userId=${userId}`)
         .then(res => {
             listData.value = res.data.pageData
             // console.log('listData.value.category: ', listData.value)
