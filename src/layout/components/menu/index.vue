@@ -11,13 +11,13 @@
                 <span>管理面板</span>
             </template>
 
-            <el-menu-item index="/admin/userlist">
+            <el-menu-item index="/getApiVisited">
                 <el-icon>
                     <View />
                 </el-icon>
                 <span>数据总览</span>
             </el-menu-item>
-            <el-menu-item index="/getApiVisited">
+            <el-menu-item index="1">
                 <el-icon>
                     <Coin />
                 </el-icon>
