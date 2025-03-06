@@ -21,8 +21,8 @@
 </template>
 
 <script setup>
-import Menu from '@/layout/components/menu/index.vue'
-import Breadcrumb from './components/breadcrumb/bread.vue'
+import Menu from '@/layout/components/menu/LeftMenu.vue'
+import Breadcrumb from './components/breadcrumb/Bread.vue'
 import UserNavComp from '@/layout/components/usernav/UserNavComp.vue'
 </script>
 

@@ -32,7 +32,6 @@ watch(
 const router = useRouter()
 
 const onLinkClick = item => {
-    console.log(item)
     router.push(item.path)
 }
 </script>
