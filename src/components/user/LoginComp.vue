@@ -1,6 +1,7 @@
 <!-- eslint-disable no-undef -->
 <template>
-  <el-form ref="ruleFormRef" :model="ruleForm" status-icon :rules="rules" label-width="auto" class="custom-ruleForm">
+  <el-form ref="ruleFormRef" :model="ruleForm" status-icon :rules="rules" label-width="auto" class="custom-ruleForm"
+    @keyup.enter="submitForm(ruleFormRef)">
     <h3 class="user_form_title">用户登录</h3>
     <el-form-item label="账号" prop="username">
       <el-input v-model="ruleForm.username" type="text" autocomplete="off" />
@@ -9,7 +10,7 @@
       <el-input v-model="ruleForm.password" type="password" autocomplete="off" />
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="submitForm(ruleFormRef)" @keyup.enter="submitForm(ruleFormRef)">
+      <el-button type="primary" @click="submitForm(ruleFormRef)">
         登录
       </el-button>
       <el-button @click="resetForm(ruleFormRef)">重置</el-button>
