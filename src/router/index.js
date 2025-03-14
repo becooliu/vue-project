@@ -68,6 +68,14 @@ const router = createRouter({
       }
     },
     {
+      path: '/user/changeMyPassword',
+      name: 'user_change_my_password',
+      component: () => import('@/components/user/views/ChangePasswordView.vue'),
+      meta: {
+        title: '修改密码'
+      }
+    },
+    {
       path: '/user/login',
       name: 'user_login',
       component: () => import('@/components/user/views/LoginView.vue'),

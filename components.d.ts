@@ -13,6 +13,8 @@ declare module 'vue' {
     BlogDetails: typeof import('./src/components/blog/BlogDetails.vue')['default']
     BlogHead: typeof import('./src/components/blog/BlogHead.vue')['default']
     BlogList: typeof import('./src/components/blog/BlogList.vue')['default']
+    ChangePassword: typeof import('./src/components/user/ChangePassword.vue')['default']
+    ChangePasswordView: typeof import('./src/components/user/views/ChangePasswordView.vue')['default']
     Create: typeof import('./src/components/roles/create.vue')['default']
     Denied: typeof import('./src/components/denied/index.vue')['default']
     EditPermission: typeof import('./src/components/roles/editPermission.vue')['default']

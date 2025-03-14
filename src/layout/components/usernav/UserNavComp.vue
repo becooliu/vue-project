@@ -13,7 +13,7 @@
             <template v-if="getUserIsAdmin">
                 <el-menu-item index="/">网站管理</el-menu-item>
             </template>
-            <el-menu-item index="2-3">修改密码</el-menu-item>
+            <el-menu-item index="/user/changeMyPassword">修改密码</el-menu-item>
             <el-menu-item index="/user/login" @click="logout">登出</el-menu-item>
         </el-sub-menu>
 
@@ -22,7 +22,7 @@
 
 <script setup>
 import { ref } from "vue"
-import { deleteCookie } from "@/utils"
+import { setLogoutData } from "@/utils"
 import { storeToRefs } from 'pinia'
 
 const username = localStorage.getItem('userKey')
@@ -35,11 +35,6 @@ const { getLoginStatus, getUserIsAdmin } = storeToRefs(store)
 console.log('App store', getLoginStatus.value, getUserIsAdmin.value)
 
 const activeIndex = ref("1");
-
-function setLogoutData() {
-    localStorage.removeItem('userKey')
-    deleteCookie('userInfo')
-}
 
 function logout() {
     store.userLogout()

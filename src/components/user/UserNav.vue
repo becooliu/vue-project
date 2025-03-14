@@ -35,7 +35,7 @@
 <script lang="ts" setup>
 import { RouterView } from "vue-router";
 import { ref, computed } from "vue";
-import {  deleteCookie } from "@/utils";
+import { setLogoutData } from "@/utils";
 import { storeToRefs } from 'pinia'
 
 const username = localStorage.getItem('userKey') || ''
@@ -48,11 +48,6 @@ const { getLoginStatus, getUserIsAdmin } = storeToRefs(store)
 console.log('App store', getLoginStatus.value, getUserIsAdmin.value)
 
 const activeIndex = ref("1");
-
-function setLogoutData(){
-  localStorage.removeItem('userKey')
-  deleteCookie('userInfo')
-}
 
 function logout() {
   store.userLogout()
