@@ -4,7 +4,7 @@
             <el-aside>
                 <el-scrollbar class="scrollbar">
                     <!-- 菜单组件-->
-                    <Menu />
+                    <Menu></Menu>
                 </el-scrollbar>
             </el-aside>
             <el-container>
