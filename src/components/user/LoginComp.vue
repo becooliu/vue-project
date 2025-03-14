@@ -73,9 +73,9 @@ const submitForm = (formEl) => {
 
         // console.log('after login res: ', loginResponse)
         const { status, message } = loginResponse.data;
-        const { username, _id, isAdmin, role } = loginResponse.data.user
         const type = status === 200 ? "success" : "error";
         if (status === 200) {
+          const { username, _id, isAdmin, role } = loginResponse.data?.user
           console.log(loginResponse);
           ElNotification({
             title: "帐号登录",
