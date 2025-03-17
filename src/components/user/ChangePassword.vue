@@ -102,11 +102,9 @@ const submitForm = (formEl) => {
             try {
                 const changePasswordResponse = await instance.post("/user/change_password", data)
 
-                console.log('changePasswordResponse ', changePasswordResponse)
                 const { status, message } = changePasswordResponse.data;
                 const type = status === 200 ? "success" : "error";
                 if (status === 200) {
-                    console.log(changePasswordResponse);
                     ElNotification({
                         title: "修改密码",
                         message,
@@ -116,6 +114,7 @@ const submitForm = (formEl) => {
                     // 修改密码成功后，设置相关的状态
                     store.userLogout()
                     setLogoutData()
+                    router.push({ name: 'user_login' })
 
                 } else {
                     ElNotification({
