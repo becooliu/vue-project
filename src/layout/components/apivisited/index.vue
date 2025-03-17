@@ -7,12 +7,17 @@
         <el-col :span="8">
             <BlogCount />
         </el-col>
+
+        <el-col :span="8">
+            <Last24HoursApiVisited />
+        </el-col>
     </el-row>
 </template>
 
 <script setup>
 import BlogCount from '@/layout/components/apivisited/BlogCount.vue'
 import ApiVisited from '@/layout/components/apivisited/ApiVisited.vue'
+import Last24HoursApiVisited from '@/layout/components/apivisited/Last24HoursApiVisited.vue'
 import instance from "@/axios/base";
 import { ref } from 'vue'
 
