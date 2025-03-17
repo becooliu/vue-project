@@ -43,7 +43,7 @@
         <el-sub-menu index="3">
             <template #title>
                 <el-icon>
-                    <Menu />
+                    <Menu></Menu>
                 </el-icon>
                 <span>分类管理</span>
             </template>
@@ -93,8 +93,12 @@
                 </el-icon>
                 <span>用户管理</span>
             </template>
-            <el-menu-item index="/admin/userlist">用户列表</el-menu-item>
-            <el-menu-item index="2-3">重置密码</el-menu-item>
+            <el-menu-item index="/admin/userlist">
+                <el-icon>
+                    <List></List>
+                </el-icon>
+                <span>用户列表</span>
+            </el-menu-item>
         </el-sub-menu>
     </el-menu>
 </template>
