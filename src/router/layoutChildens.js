@@ -1,6 +1,16 @@
 // 管理面板的子路由
 export const layoutChildrens = [
   {
+    path: '/analyze',
+    name: 'analyze',
+    component: () => import('@/layout/components/analyze/Analyze.vue'),
+    meta: {
+      title: '分析',
+      requireAuth: true, // 需要用户登录
+      roles: ['admin'] //受访问限制的角色
+    }
+  },
+  {
     path: '/admin/userlist',
     name: 'user_list',
     component: () => import('@/components/admin/UserList.vue'),

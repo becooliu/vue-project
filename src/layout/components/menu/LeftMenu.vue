@@ -1,8 +1,8 @@
 <template>
     <h5 class="sys-title">博客管理 V1.0</h5>
-    <el-menu router default-active="1" :default-openeds="['1']" class="el-menu-vertical-demo manage-menu"
+    <el-menu router default-active="/getApiVisited" :default-openeds="['/getApiVisited']" class="el-menu-vertical-demo manage-menu"
         active-color="#409eff">
-        <el-sub-menu index="1">
+        <el-sub-menu index="0">
 
             <template #title>
                 <el-icon>
@@ -17,11 +17,11 @@
                 </el-icon>
                 <span>数据总览</span>
             </el-menu-item>
-            <el-menu-item index="1">
+            <el-menu-item index="/analyze">
                 <el-icon>
                     <Coin />
                 </el-icon>
-                <span>分析</span>
+                <span>分析</span> 
             </el-menu-item>
 
 
