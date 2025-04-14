@@ -91,8 +91,8 @@ const submitForm = (formEl) => {
             isAdmin
           }
           store.afterLogin(userStoreData)
-          store.setUserPermissions(role.permissions)
-          store.setUserRole(role.role)
+          store.setUserPermissions(role?.permissions)
+          store.setUserRole(role?.role)
           const userInfo = {username, _id}
           // 登录成功后设置cookie 1天后失效
           setCookie('userInfo', JSON.stringify(userInfo), 1)
