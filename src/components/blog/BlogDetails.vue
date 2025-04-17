@@ -58,7 +58,7 @@
                     <div class="avatar-container">
                         <div class="avatar">{{ item?.author?.username.slice(0, 1).toUpperCase() }}</div>
                         <div class="info">
-                            <div class="username">{{ item.author.username }}</div>
+                            <div class="username">{{ item?.author?.username }}</div>
                             <span class="comment-time">{{ formatTimeText(item.createdAt) }}</span>
                             <div class="comment">{{ item.content }} <span class="reply"
                                     @click="replyComment(item.author.username, item._id)">回复</span></div>
@@ -114,6 +114,10 @@ import BlogHead from './BlogHead.vue'
 import { dateToLocaleString } from '@/utils/index'
 
 const route = useRoute()
+import { storeToRefs } from 'pinia'
+import { useUserStatusStore } from '@/store/index'
+const store = useUserStatusStore()
+const { getLoginStatus } = storeToRefs(store)
 
 const blogDetailsData = ref(null)
 const loading = ref(false)
@@ -141,7 +145,7 @@ async function getBlogData(_id) {
         blogDetailsData.value = blogData.data
         const categoryId = blogData.data.category._id
         viewCount.value = blogData.data.views
-        comments.value = commentsData.data.data
+        comments.value = commentsData.data.data.reverse()
         const blogLikes = await instance.get('/blog/likes', { params: { category: categoryId, blogId: _id } })
         likesData.value = blogLikes.data
     } catch (err) {
@@ -186,6 +190,15 @@ const rules = reactive({
 
 const addComment = (form) => {
     if (!form) return
+
+    if (!getLoginStatus?.value) {
+        ElNotification({
+            title: "用户登录",
+            message: '您已退出登录，请先登录再发表评论。',
+            type: "error",
+        })
+        return
+    }
     form.validate(async valid => {
         if (valid) {
             const params = {
@@ -211,16 +224,8 @@ const sendCommentData = async (params) => {
 
         console.log('commentResponse', commentResponse)
         const commentsArr = commentResponse?.data.data
-        commentsArr.forEach(item => {
-            if (item.replies.length) {
-                item.replies.sort((a, b) => {
-                    return a.createdAt - b.createdAt
-                })
-            } else {
-                return item
-            }
-        });
-        comments.value = commentsArr
+
+        comments.value = commentsArr.reverse()
         // showCommentForm.value = !!!commentsArr.length
         ElNotification({
             title: "发表评论",
@@ -239,12 +244,17 @@ const sendCommentData = async (params) => {
 }
 
 // 格式化评论时间
-const formatTimeText = (timestamp) => {
-    const _time = (new Date().getTime() - new Date(timestamp).valueOf()) / 1000
+function formatTimeText(timestamp) {
+    let now = new Date().getTime()
+    let createdTime = new Date(timestamp).getTime()
+    let _time = (now - createdTime) / 1000
     let string = ''
     switch (true) {
+        case (_time < 60):
+            string = `刚刚`
+            // Math.floor(_time / 60)
+            break;
         case (_time < 60 * 60):
-            //console.log('几分钟前')
             string = `${Math.floor(_time / 60)}分钟前`
             // Math.floor(_time / 60)
             break;
@@ -255,10 +265,10 @@ const formatTimeText = (timestamp) => {
             string = `${Math.floor(_time / (60 * 60 * 24))}天前`
             break;
         case (_time >= 60 * 60 * 24 * 2):
-            string = timeStringToDate(new Date(timestamp).valueOf())
+            string = timeStringToDate(new Date(timestamp).getTime())
             break;
         default:
-            string = timeStringToDate(new Date(timestamp).valueOf())
+            string = timeStringToDate(new Date(timestamp).getTime())
     }
     return string
 }
@@ -289,6 +299,14 @@ const focusInput = () => {
 
 const submitReplyComment = (form) => {
     if (!form) return
+    if (!getLoginStatus?.value) {
+        ElNotification({
+            title: "用户登录",
+            message: '您已退出登录，请先登录再发表评论。',
+            type: "error",
+        })
+        return
+    }
     form.validate(async valid => {
         if (valid) {
             const params = {
